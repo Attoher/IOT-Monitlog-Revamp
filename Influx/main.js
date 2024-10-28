@@ -1,3 +1,17 @@
+function showLoader() {
+    document.querySelector('.loader').style.display = 'block';
+}
+
+function hideLoader() {
+    document.querySelector('.loader').style.display = 'none';
+}
+
+showLoader();
+setTimeout(() => {
+    hideLoader();
+}, 1000);
+
+
 const chart = document.querySelector("#chart").getContext('2d');
 
 new Chart(chart, {
