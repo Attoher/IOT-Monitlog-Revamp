@@ -11,16 +11,6 @@ setTimeout(() => {
     hideLoader();
 }, 1000);
 
-
-const chartCtx = document.querySelector("#chart").getContext('2d');
-
-fetch('./DB/DB.json')
-    .then(response => response.json())
-    .then(data => {
-        new Chart(chartCtx, data);
-    })
-    .catch(error => console.error('Error loading chart data:', error));
-
 const menuBtn = document.querySelector('#menu-btn');
 const closeBtn = document.querySelector('#close-btn');
 const sideBar = document.querySelector('aside');
