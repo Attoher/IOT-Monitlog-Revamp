@@ -2,50 +2,50 @@ const chartCtx = document.querySelector("#chart").getContext('2d');
 
 async function fetchData() {
     try {
-        const response = await fetch('/data'); // Ambil data dari server
-        const data = await response.json(); // Ubah response ke format JSON
+        const response = await fetch('/data'); 
+        const data = await response.json(); 
 
-        console.log('Fetched data:', data); // Debugging
+        console.log('Fetched data:', data); 
 
-        // Memisahkan data berdasarkan sensor_id
+        
         const groupedData = data.reduce((acc, item) => {
-            const sensorId = item.sensor_id; // Ambil sensor_id
-            const measurement = item._measurement; // Ambil measurement
-            const label = `${measurement} ${sensorId}`; // Gabungkan measurement dan sensor_id untuk label
+            const sensorId = item.sensor_id; 
+            const measurement = item._measurement; 
+            const label = `${measurement} ${sensorId}`; 
             
             if (!acc[label]) {
-                acc[label] = { labels: [], values: [] }; // Buat array jika belum ada
+                acc[label] = { labels: [], values: [] }; 
             }
-            acc[label].labels.push(new Date(item._time).toLocaleString()); // Ambil waktu
-            acc[label].values.push(item._value); // Ambil nilai
+            acc[label].labels.push(new Date(item._time).toLocaleString()); 
+            acc[label].values.push(item._value); 
             return acc;
         }, {});
 
-        // Definisikan warna statis untuk setiap dataset
+        
         const staticColors = [
-            'rgba(75, 192, 192, 1)', // Warna untuk sensor pertama
-            'rgba(255, 99, 132, 1)', // Warna untuk sensor kedua
-            'rgba(255, 206, 86, 1)', // Warna untuk sensor ketiga
-            'rgba(54, 162, 235, 1)', // Warna untuk sensor keempat
-            'rgba(153, 102, 255, 1)'  // Warna untuk sensor kelima
-            // Tambahkan warna sesuai kebutuhan
+            'rgba(75, 192, 192, 1)',  
+            'rgba(255, 99, 132, 1)', 
+            'rgba(255, 206, 86, 1)', 
+            'rgba(54, 162, 235, 1)', 
+            'rgba(153, 102, 255, 1)'  
+            
         ];
 
-        // Buat dataset untuk Chart.js
+        
         const datasets = Object.keys(groupedData).map((label, index) => ({
-            label: label, // Gunakan label yang telah dibuat
+            label: label, 
             data: groupedData[label].values,
-            borderColor: staticColors[index % staticColors.length], // Gunakan warna statis
+            borderColor: staticColors[index % staticColors.length], 
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderWidth: 1
         }));
 
-        // Buat chart menggunakan Chart.js
+        
         new Chart(chartCtx, {
-            type: 'line', // Jenis chart (misalnya line)
+            type: 'line', 
             data: {
-                labels: groupedData[Object.keys(groupedData)[0]].labels, // Ambil label dari sensor pertama
-                datasets: datasets // Gunakan dataset yang telah dibuat
+                labels: groupedData[Object.keys(groupedData)[0]].labels, 
+                datasets: datasets
             },
             options: {
                 responsive: true,
@@ -58,9 +58,8 @@ async function fetchData() {
         });
 
     } catch (error) {
-        console.error('Error loading chart data:', error); // Tangani error
+        console.error('Error loading chart data:', error); 
     }
 }
 
-// Panggil fetchData untuk mengambil data dan membuat chart saat halaman dimuat
 fetchData();
