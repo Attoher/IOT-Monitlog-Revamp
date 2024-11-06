@@ -8,7 +8,7 @@ const port = 3000;
 const influxDBUrl = 'http://localhost:8086';
 const token = 'GRwDbnG7xekzNhinDTBa-GWgzpdMMjNqRFiIj1VPM4y3EKd3voVUD0BEvRvjsTjEvp4cTn3EZAKoIEDgGHiKaA=='; 
 const org = '379932e683da78f5'; 
-const bucket = 'dataACIOTLOGGER'; 
+const bucket = 'dataIotSuhu'; 
 
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
