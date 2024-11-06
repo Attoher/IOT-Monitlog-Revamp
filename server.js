@@ -14,7 +14,6 @@ const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
 app.use(express.json());
 
-
 app.use(express.static('public'));
 
 
@@ -41,21 +40,6 @@ app.get('/data', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Error executing query');
-    }
-});
-
-
-app.delete('/data', async (req, res) => {
-    const deleteApi = influxDB.getDeleteApi(org);
-    const start = '1970-01-01T00:00:00Z'; 
-    const stop = new Date().toISOString(); 
-
-    try {
-        await deleteApi.delete({ start, stop, predicate: `sensor_id = "TLM0100"` }, bucket);
-        res.send('All data deleted successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error deleting data from InfluxDB');
     }
 });
 
