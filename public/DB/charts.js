@@ -25,22 +25,18 @@ async function fetchData() {
 
         const groupedData = data.reduce((acc, item) => {
             const measurement = item._measurement;
-            const field = item._field;
             const sensorId = item.sensor_id;
-            const label = `${measurement} ${field} ${sensorId}`;
+            const label = `${measurement} ${sensorId}`;
 
             if (!acc[measurement]) {
                 acc[measurement] = {};
             }
-            if (!acc[measurement][field]) {
-                acc[measurement][field] = {};
-            }
-            if (!acc[measurement][field][label]) {
-                acc[measurement][field][label] = { labels: [], values: [] };
+            if (!acc[measurement][label]) {
+                acc[measurement][label] = { labels: [], values: [] };
             }
 
-            acc[measurement][field][label].labels.push(new Date(item._time).toLocaleString());
-            acc[measurement][field][label].values.push(item._value);
+            acc[measurement][label].labels.push(new Date(item._time).toLocaleString());
+            acc[measurement][label].values.push(item._value);
             return acc;
         }, {});
 
@@ -55,48 +51,46 @@ async function fetchData() {
         chartContainer.innerHTML = ''; // Clear previous charts
 
         Object.keys(groupedData).forEach((measurement) => {
-            Object.keys(groupedData[measurement]).forEach((field) => {
-                const canvas = document.createElement("canvas");
-                canvas.id = "chart";
-                chartContainer.appendChild(canvas);
-                const chartCtx = canvas.getContext('2d');
+            const canvas = document.createElement("canvas");
+            canvas.id = "chart";
+            chartContainer.appendChild(canvas);
+            const chartCtx = canvas.getContext('2d');
 
-                const datasets = Object.keys(groupedData[measurement][field]).map((label, index) => ({
-                    label: label,
-                    data: groupedData[measurement][field][label].values,
-                    borderColor: staticColors[index % staticColors.length],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
-                }));
+            const datasets = Object.keys(groupedData[measurement]).map((label, index) => ({
+                label: label,
+                data: groupedData[measurement][label].values,
+                borderColor: staticColors[index % staticColors.length],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 1
+            }));
 
-                new Chart(chartCtx, {
-                    type: 'line',
-                    data: {
-                        labels: groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels,
-                        datasets: datasets
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: `Measurement: ${measurement}, Field: ${field}`, // Teks keterangan sesuai measurement dan field
-                                font: {
-                                    size: 18,  // Ukuran font
-                                    weight: 'bold'
-                                }
-                            },
-                            legend: {
-                                position: 'top', // Posisi legend
+            new Chart(chartCtx, {
+                type: 'line',
+                data: {
+                    labels: groupedData[measurement][Object.keys(groupedData[measurement])[0]].labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Measurement: ${measurement}`, // Teks keterangan sesuai measurement
+                            font: {
+                                size: 18,  // Ukuran font
+                                weight: 'bold'
                             }
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                        legend: {
+                            position: 'top', // Posisi legend
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
                         }
                     }
-                });
+                }
             });
         });
 
@@ -164,22 +158,18 @@ document.querySelector("#konsumsi-listrik-btn").addEventListener("click", functi
 function renderChart(data) {
     const groupedData = data.reduce((acc, item) => {
         const measurement = item._measurement;
-        const field = item._field;
         const sensorId = item.sensor_id;
-        const label = `${measurement} ${field} ${sensorId}`;
+        const label = `${measurement} ${sensorId}`;
 
         if (!acc[measurement]) {
             acc[measurement] = {};
         }
-        if (!acc[measurement][field]) {
-            acc[measurement][field] = {};
-        }
-        if (!acc[measurement][field][label]) {
-            acc[measurement][field][label] = { labels: [], values: [] };
+        if (!acc[measurement][label]) {
+            acc[measurement][label] = { labels: [], values: [] };
         }
 
-        acc[measurement][field][label].labels.push(new Date(item._time).toLocaleString());
-        acc[measurement][field][label].values.push(item._value);
+        acc[measurement][label].labels.push(new Date(item._time).toLocaleString());
+        acc[measurement][label].values.push(item._value);
         return acc;
     }, {});
 
@@ -194,48 +184,46 @@ function renderChart(data) {
     chartContainer.innerHTML = ''; // Clear previous charts
 
     Object.keys(groupedData).forEach((measurement) => {
-        Object.keys(groupedData[measurement]).forEach((field) => {
-            const canvas = document.createElement("canvas");
-            canvas.id = "chart";
-            chartContainer.appendChild(canvas);
-            const chartCtx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        canvas.id = "chart";
+        chartContainer.appendChild(canvas);
+        const chartCtx = canvas.getContext('2d');
 
-            const datasets = Object.keys(groupedData[measurement][field]).map((label, index) => ({
-                label: label,
-                data: groupedData[measurement][field][label].values,
-                borderColor: staticColors[index % staticColors.length],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 1
-            }));
+        const datasets = Object.keys(groupedData[measurement]).map((label, index) => ({
+            label: label,
+            data: groupedData[measurement][label].values,
+            borderColor: staticColors[index % staticColors.length],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderWidth: 1
+        }));
 
-            new Chart(chartCtx, {
-                type: 'line',
-                data: {
-                    labels: groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: `Measurement: ${measurement}, Field: ${field}`, // Teks keterangan sesuai measurement dan field
-                            font: {
-                                size: 18,  // Ukuran font
-                                weight: 'bold'
-                            }
-                        },
-                        legend: {
-                            position: 'top', // Posisi legend
+        new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: groupedData[measurement][Object.keys(groupedData[measurement])[0]].labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Measurement: ${measurement}`, // Teks keterangan sesuai measurement
+                        font: {
+                            size: 18,  // Ukuran font
+                            weight: 'bold'
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                    legend: {
+                        position: 'top', // Posisi legend
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
+            }
         });
     });
 }
