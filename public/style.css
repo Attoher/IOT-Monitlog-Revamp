@@ -524,6 +524,14 @@ main .fast-activate .badge div {
     align-self: center;
 }
 
+canvas {
+    width: 50%;
+    height: auto;
+}
+
+#chartContainer {
+    width: 100%;
+}
 canvas#chart{
     background: var(--color-white);
     max-width: 100%;
