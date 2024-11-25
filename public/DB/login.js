@@ -53,34 +53,31 @@ document.querySelectorAll(".form input, .form textarea").forEach(function (input
   // Menangani pengiriman form signup
   document.getElementById('signupForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah reload halaman
-  
+    
     // Ambil nilai dari input form
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-  
+    
     // Validasi sederhana
-    if (!email || !password) {
-      document.getElementById('message').innerText = 'Email dan password harus diisi.';
+    if (!firstName || !lastName || !email || !password) {
+      document.getElementById('message').innerText = 'Semua field harus diisi.';
       return;
     }
   
     // Data yang akan dikirim ke server
-    const data = { email, password };
-  
+    const data = { firstName, lastName, email, password };
+    
     // Kirim data menggunakan Fetch API
-    fetch('http://localhost:3000/0login.html', {
+    fetch('http://localhost:3000/signup', {
       method: 'POST', // HTTP method
       headers: {
         'Content-Type': 'application/json', // Jenis konten
       },
       body: JSON.stringify(data), // Konversi data ke JSON
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Signup gagal, server mengembalikan respons gagal');
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((result) => {
         // Tampilkan pesan dari server
         if (result.message) {
@@ -97,37 +94,42 @@ document.querySelectorAll(".form input, .form textarea").forEach(function (input
   });
   
   
+  
+  
 
 // Menangani pengiriman form login
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
   e.preventDefault(); // Mencegah form untuk disubmit secara langsung
 
-  const email = document.querySelector('input[type="email"]').value;
-  const password = document.querySelector('input[type="password"]').value;
+  const email = document.querySelector('input[type="email"]').value.trim();
+  const password = document.querySelector('input[type="password"]').value.trim();
 
   try {
-    // Kirim data login ke server
-    const response = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+      // Kirim data login ke server
+      const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+      });
 
-    if (response.ok) {
-      // Jika login berhasil, redirect ke index.html
-      window.location.href = 'index.html';
-    } else {
-      // Jika login gagal, tampilkan pesan kesalahan
-      const errorMessage = await response.json();
-      alert('Login gagal: ' + errorMessage.error);
-    }
+      const result = await response.json(); // Parse respons JSON dari server
+
+      if (response.ok) {
+          // Jika login berhasil, redirect ke index.html
+          alert(result.message); // Tampilkan pesan berhasil
+          window.location.href = 'index.html';
+      } else {
+          // Jika login gagal, tampilkan pesan kesalahan
+          alert(result.error);
+      }
   } catch (error) {
-    // Tangani jika ada kesalahan dalam permintaan (misalnya masalah jaringan)
-    alert('Terjadi kesalahan: ' + error.message);
+      // Tangani jika ada kesalahan dalam permintaan (misalnya masalah jaringan)
+      alert('Terjadi kesalahan: ' + error.message);
   }
 });
+
 
 
 

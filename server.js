@@ -17,21 +17,18 @@ const listrikBucket = 'dataIotListrik';
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
 // Inisialisasi koneksi ke database SQLite
-const db = new sqlite3.Database('./database.db', (err) => {
-    if (err) {
-        console.error('Error connecting to SQLite:', err.message);
-    } else {
-        console.log('Connected to SQLite database.');
-    }
-});
+const db = new sqlite3.Database('./db.sqlite3');
 
-// Buat tabel (jika belum ada) untuk menyimpan data sensor
+
 db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL,
-    value REAL NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
+
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -118,61 +115,56 @@ app.get('/data/konsumsiListrik', async (req, res) => {
 });
 
 app.post('/signup', (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
   
     // Validasi input
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email dan password harus diisi.' });
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({ error: 'Semua field (email, password, first name, last name) harus diisi.' });
     }
   
-    // Simpan ke database
-    const query = `INSERT INTO users (email, password) VALUES (?, ?)`;
-    db.run(query, [email, password], function (err) {
+    // Query untuk menyisipkan data ke tabel users
+    const query = `INSERT INTO users (email, password, first_name, last_name) VALUES (?, ?, ?, ?)`;
+  
+    db.run(query, [email, password, firstName, lastName], function (err) {
       if (err) {
-        if (err.message.includes('UNIQUE constraint failed')) {
+        if (err.code === 'SQLITE_CONSTRAINT') {
+          // Jika email sudah ada
           return res.status(400).json({ error: 'Email sudah terdaftar.' });
         }
-        console.error('Error saat menyimpan data:', err.message);
-        return res.status(500).json({ error: 'Gagal menyimpan data ke database.' });
+        console.error(err);
+        return res.status(500).json({ error: 'Terjadi kesalahan saat menyimpan data.' });
       }
-  
-      // Berhasil disimpan
-      res.status(201).json({ message: 'Pendaftaran berhasil.' });
+      // Jika berhasil
+      res.status(201).json({ message: 'Signup berhasil. Data berhasil disimpan ke database.' });
     });
   });
+  
 
 // Endpoint untuk login
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Email dan password diperlukan' });
     }
 
-    try {
-        const emailExists = await checkEmailExists(email);
+    // Query untuk mencari pengguna berdasarkan email dan password
+    const query = `SELECT * FROM users WHERE email = ? AND password = ?`;
 
-        if (!emailExists) {
-            return res.status(404).json({ error: 'Email tidak terdaftar' });
+    db.get(query, [email, password], (err, row) => {
+        if (err) {
+            console.error('Error executing query', err.message);
+            return res.status(500).json({ error: 'Terjadi kesalahan pada server' });
         }
 
-        // Lanjutkan dengan validasi password
-        const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
-        db.get(query, [email, password], (err, row) => {
-            if (err) {
-                console.error('Error executing query', err.message);
-                return res.status(500).json({ error: 'Terjadi kesalahan pada server' });
-            }
-
-            if (row) {
-                return res.json({ message: 'Login berhasil', user: row });
-            } else {
-                return res.status(401).json({ error: 'Email atau password salah' });
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error });
-    }
+        if (row) {
+            // Jika pengguna ditemukan
+            return res.json({ message: 'Login berhasil', user: row });
+        } else {
+            // Jika pengguna tidak ditemukan
+            return res.status(401).json({ error: 'Email atau password salah' });
+        }
+    });
 });
 
   
