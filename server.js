@@ -26,7 +26,7 @@ const db = new sqlite3.Database('./database.db', (err) => {
 });
 
 // Buat tabel (jika belum ada) untuk menyimpan data sensor
-db.run(`CREATE TABLE IF NOT EXISTS sensorData (
+db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL,
     value REAL NOT NULL,
@@ -117,6 +117,86 @@ app.get('/data/konsumsiListrik', async (req, res) => {
     }
 });
 
+app.post('/signup', (req, res) => {
+    const { email, password } = req.body;
+  
+    // Validasi input
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email dan password harus diisi.' });
+    }
+  
+    // Simpan ke database
+    const query = `INSERT INTO users (email, password) VALUES (?, ?)`;
+    db.run(query, [email, password], function (err) {
+      if (err) {
+        if (err.message.includes('UNIQUE constraint failed')) {
+          return res.status(400).json({ error: 'Email sudah terdaftar.' });
+        }
+        console.error('Error saat menyimpan data:', err.message);
+        return res.status(500).json({ error: 'Gagal menyimpan data ke database.' });
+      }
+  
+      // Berhasil disimpan
+      res.status(201).json({ message: 'Pendaftaran berhasil.' });
+    });
+  });
+
+// Endpoint untuk login
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email dan password diperlukan' });
+    }
+
+    try {
+        const emailExists = await checkEmailExists(email);
+
+        if (!emailExists) {
+            return res.status(404).json({ error: 'Email tidak terdaftar' });
+        }
+
+        // Lanjutkan dengan validasi password
+        const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
+        db.get(query, [email, password], (err, row) => {
+            if (err) {
+                console.error('Error executing query', err.message);
+                return res.status(500).json({ error: 'Terjadi kesalahan pada server' });
+            }
+
+            if (row) {
+                return res.json({ message: 'Login berhasil', user: row });
+            } else {
+                return res.status(401).json({ error: 'Email atau password salah' });
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+});
+
+  
+  app.post('/check-email', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email diperlukan' });
+    }
+
+    try {
+        const emailExists = await checkEmailExists(email);
+        if (emailExists) {
+            res.json({ message: 'Email sudah terdaftar' });
+        } else {
+            res.status(404).json({ message: 'Email belum terdaftar' });
+        }
+    } catch (error) {
+        console.error('Error checking email:', error);
+        res.status(500).json({ error: 'Terjadi kesalahan saat memeriksa email' });
+    }
+});
+
+
 // Endpoint untuk menambahkan data ke SQLite
 app.post('/data/sqlite', (req, res) => {
     const { type, value } = req.body;
@@ -125,7 +205,7 @@ app.post('/data/sqlite', (req, res) => {
         return res.status(400).json({ error: 'Type and value are required' });
     }
 
-    const query = `INSERT INTO sensorData (type, value) VALUES (?, ?)`;
+    const query = `INSERT INTO users (type, value) VALUES (?, ?)`;
 
     db.run(query, [type, value], function (err) {
         if (err) {
@@ -138,7 +218,7 @@ app.post('/data/sqlite', (req, res) => {
 
 // Endpoint untuk mengambil semua data dari SQLite
 app.get('/data/sqlite', (req, res) => {
-    const query = `SELECT * FROM sensorData`;
+    const query = `SELECT * FROM users`;
 
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -152,7 +232,7 @@ app.get('/data/sqlite', (req, res) => {
 // Endpoint untuk mengambil data dari SQLite berdasarkan jenis sensor
 app.get('/data/sqlite/:type', (req, res) => {
     const { type } = req.params;
-    const query = `SELECT * FROM sensorData WHERE type = ?`;
+    const query = `SELECT * FROM users WHERE type = ?`;
 
     db.all(query, [type], (err, rows) => {
         if (err) {

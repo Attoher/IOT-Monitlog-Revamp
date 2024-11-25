@@ -51,47 +51,83 @@ document.querySelectorAll(".form input, .form textarea").forEach(function (input
   });
   
   // Menangani pengiriman form signup
-document.getElementById('signupForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form untuk disubmit secara langsung
-
-  // Di sini, Anda bisa menambahkan validasi atau logika lain sebelum pengalihan
-  // Misalnya, kirim data ke server dan tunggu respon untuk memastikan signup berhasil
-
-  // Jika signup berhasil, arahkan ke index.html
-  window.location.href = 'index.html'; // Pengalihan ke index.html setelah signup
-});
+  document.getElementById('signupForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah reload halaman
+  
+    // Ambil nilai dari input form
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+  
+    // Validasi sederhana
+    if (!email || !password) {
+      document.getElementById('message').innerText = 'Email dan password harus diisi.';
+      return;
+    }
+  
+    // Data yang akan dikirim ke server
+    const data = { email, password };
+  
+    // Kirim data menggunakan Fetch API
+    fetch('http://localhost:3000/0login.html', {
+      method: 'POST', // HTTP method
+      headers: {
+        'Content-Type': 'application/json', // Jenis konten
+      },
+      body: JSON.stringify(data), // Konversi data ke JSON
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Signup gagal, server mengembalikan respons gagal');
+        }
+        return response.json();
+      })
+      .then((result) => {
+        // Tampilkan pesan dari server
+        if (result.message) {
+          document.getElementById('message').innerText = result.message;
+        } else if (result.error) {
+          document.getElementById('message').innerText = result.error;
+        }
+      })
+      .catch((error) => {
+        // Tangkap kesalahan jika request gagal
+        console.error('Error:', error);
+        document.getElementById('message').innerText = 'Terjadi kesalahan. Coba lagi.';
+      });
+  });
+  
+  
 
 // Menangani pengiriman form login
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form untuk disubmit secara langsung
-
-  // Di sini, Anda bisa menambahkan validasi atau logika lain sebelum pengalihan
-  // Misalnya, kirim data ke server dan tunggu respon untuk memastikan login berhasil
-
-  // Jika login berhasil, arahkan ke index.html
-  window.location.href = 'index.html'; // Pengalihan ke index.html setelah login
-});
-
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault(); // Mencegah form untuk disubmit secara langsung
 
   const email = document.querySelector('input[type="email"]').value;
   const password = document.querySelector('input[type="password"]').value;
 
-  // Kirim data login ke server
-  const response = await fetch('/login', {
+  try {
+    // Kirim data login ke server
+    const response = await fetch('/login', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
-  });
+    });
 
-  if (response.ok) {
-      // Jika login berhasil, arahkan ke index.html
+    if (response.ok) {
+      // Jika login berhasil, redirect ke index.html
       window.location.href = 'index.html';
-  } else {
-      // Tampilkan pesan kesalahan jika login gagal
-      alert('Login failed: ' + await response.text());
+    } else {
+      // Jika login gagal, tampilkan pesan kesalahan
+      const errorMessage = await response.json();
+      alert('Login gagal: ' + errorMessage.error);
+    }
+  } catch (error) {
+    // Tangani jika ada kesalahan dalam permintaan (misalnya masalah jaringan)
+    alert('Terjadi kesalahan: ' + error.message);
   }
 });
+
+
+
