@@ -14,7 +14,7 @@
 .spinner {
     margin-top: 46.5vh;
     margin-left: 46.5vw;
-    border: 8px solid #3498db;
+    border: 8px solid var(--color-primary);
     border-top: 8px solid transparent;
     border-radius: 50%;
     width: 50px;
