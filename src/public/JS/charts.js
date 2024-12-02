@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
             pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
             prevBtn.style.display = "inline-block"; // Show prev button when possible
             if (currentChartIndex === charts.length - 1) {
-                nextBtn.style.display = "none"; // Hide next button when at the last page
+                nextBtn.style.display = "none"; // Hide next button on the last chart
             }
         }
     });
@@ -227,11 +227,20 @@ document.addEventListener("DOMContentLoaded", function () {
             pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
             nextBtn.style.display = "inline-block"; // Show next button when possible
             if (currentChartIndex === 0) {
-                prevBtn.style.display = "none"; // Hide prev button when at the first page
+                prevBtn.style.display = "none"; // Hide prev button on the first chart
             }
         }
     });
 
-    // Initial fetch and render
+    // Arrow key navigation
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft") {
+            prevBtn.click(); // Simulate the "Previous" button click
+        } else if (e.key === "ArrowRight") {
+            nextBtn.click(); // Simulate the "Next" button click
+        }
+    });
+
+    // Initial data fetch and chart render
     fetchDataAndRender();
 });
