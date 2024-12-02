@@ -1,0 +1,70 @@
+:root {
+    --color-white: #ffffff;
+    --color-light: #f0eff5;
+    --color-gray-light: #86848c;
+    --color-gray-dark: #56555e;
+    --color-dark: #27282f;
+  
+    --color-primary: rgb(71, 7, 234);
+    --color-success: rgb(34, 202, 75);
+    --color-danger: rgb(255, 67, 54);
+    --color-warning: rgb(234, 181, 7);
+    --color-purple: rgb(160, 99, 245);
+  
+    --color-primary-light: rgba(71, 7, 234, 0.2);
+    --color-success-light: rgba(34, 202, 75, 0.2);
+    --color-danger-light: rgba(255, 67, 54, 0.2);
+    --color-purple-light: rgba(160, 99, 245, 0.2);
+  
+    --card-padding: 1.6rem;
+    --padding-1: 1rem;
+    --padding-2: 8px;
+  
+    --card-border-radius: 1.6rem;
+    --border-radius-1: 1rem;
+    --border-radius-2: 6px;
+  }
+
+  .message-section {
+    background-color: var(--color-white);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+.message-section.success {
+    background-color: #388e3c; /* Hijau untuk sukses */
+    color: white;
+  }
+  
+  .message-section.warning {
+    background-color: #fbc02d; /* Kuning untuk peringatan */
+    color: white;
+  }
+  
+  .message-section.error {
+    background-color: #d32f2f; /* Merah untuk kesalahan */
+    color: white;
+  }
+  
+  .message-section.info {
+    background-color: #2196f3; /* Biru untuk info */
+    color: white;
+  }
+  
+  .message-section.critical {
+    background-color: #e91e63; /* Merah Muda untuk kritis */
+    color: white;
+  }
+  
+  .message-section.notice {
+    background-color: #ff9800; /* Oranye untuk pemberitahuan */
+    color: white;
+  }
+  
+  .message-section p {
+    font-size: 16px;
+    margin: 0;
+  }

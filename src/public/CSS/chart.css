@@ -1,0 +1,7 @@
+canvas {
+    display: block;
+    margin: 0 auto; /* Center alignment */
+    max-width: 50%; /* 50% dari lebar container atau layar */
+    height: 300px; /* Tinggi tetap */
+  }
+  

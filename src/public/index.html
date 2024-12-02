@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iot Monitlog</title>
+    <link rel="icon" href="./images/IOT.png" type="image/x-icon">
+    
+    <!-- MATERIAL ICONS CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet" />
+    
+    <!-- GOOGLE FONTS (POPPINS) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- STYLESHEET -->
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/home.css">
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+    </div>
+    <nav>
+        <div class="container">
+            <a href="0index.html"><img src="./images/Iot Monitlog.png" style="width: 150px; border-radius: 100%;" class="logo" alt="Logo"></a>
+            
+            <div class="search-bar">
+                <span class="material-symbols-outlined">search</span>
+                <input type="search" placeholder="Search">
+            </div>
+            
+            <div class="profile-area">
+                <div class="theme-btn">
+                    <span class="material-symbols-outlined active">light_mode</span>
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </div>
+                
+                <div class="profile">
+                    <div class="profile-photo">
+                        <img src="./images/Troll.webp" alt="Profile Photo">
+                    </div>
+                    <a href="http://localhost:3000/0login.html"><h5>User</h5></a>
+                    <span class="material-symbols-outlined">keyboard_arrow_down</span>
+                </div>
+                <button id="menu-btn">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <aside>
+            <button id="close-btn">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="sidebar">
+                <a href="1dashboard.html">
+                    <span class="material-icons-sharp">dashboard</span>
+                    <h4>Dashboard</h4>
+                </a>
+                <a href="2analytics.html">
+                    <span class="material-icons-sharp">pie_chart</span>
+                    <h4>Analytics</h4>
+                </a>
+                <a href="3message.html">
+                    <span class="material-icons-sharp">message</span>
+                    <h4>Message</h4>
+                </a>
+                <a href="4settings.html">
+                    <span class="material-icons-sharp">settings</span>
+                    <h4>Settings</h4>
+                </a>
+            </div>
+            <div class="updates">
+                <span class="material-icons-sharp">update</span>
+                <h4>Update Available</h4>
+                <small>Security Update</small>
+                <small>General Update</small>
+                <a href="#">Update Now</a>
+            </div>
+        </aside><section class="middle">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="container">
+                    <h1>Welcome to IoT Logger</h1>
+                    <p>Track, manage, and gain insights from your IoT devices in real-time. Your IoT ecosystem, simplified and optimized.</p>
+                </div>
+                <div class="hero-image">
+                    <img src="images/IotLanding1.jpg" alt="IoT Logger Image">
+                </div>
+            </section>
+        
+            <!-- Features Section -->
+            <section id="features" class="features">
+                <div class="container">
+                    <h2>Key Features</h2>
+                    <div class="feature-cards">
+                        <div class="card">
+                            <span class="material-icons-sharp">analytics</span>
+                            <h3>Real-Time Analytics</h3>
+                            <p>Instantly track performance and receive actionable insights for all your IoT devices.</p>
+                        </div>
+                        <div class="card">
+                            <span class="material-icons-sharp">security</span>
+                            <h3>Secure Data</h3>
+                            <p>Keep your data safe with industry-leading security protocols, ensuring complete protection.</p>
+                        </div>
+                        <div class="card">
+                            <span class="material-icons-sharp">device_hub</span>
+                            <h3>Device Management</h3>
+                            <p>Effortlessly add, remove, and configure your IoT devices from one centralized hub.</p>
+                        </div>
+                        <div class="card">
+                            <span class="material-icons-sharp">settings_remote</span>
+                            <h3>Remote Control</h3>
+                            <p>Manage your devices remotely, anytime and anywhere, with our intuitive interface.</p>
+                        </div>
+                        <div class="card">
+                            <span class="material-icons-sharp">notifications</span>
+                            <h3>Smart Alerts</h3>
+                            <p>Receive real-time notifications and alerts for critical device events and changes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="features-image">
+                    <!-- <img src="images/IotLanding2.jpg.png" alt="Features Image"> -->
+                </div>
+            </section>
+        </section>
+        
+        
+        <section class="right">
+            <!-- Testimonials Section -->
+            <div class="testimonials">
+                <div class="container">
+                    <h2>What Our Users Say</h2>
+                    <div class="testimonial-cards">
+                        <div class="testimonial-card">
+                            <p>"This platform has revolutionized the way I track my IoT devices. The analytics are top-notch!"</p>
+                            <div class="user">
+                                <img src="./images/user1.jpg" alt="User 1">
+                                <h4>John Doe</h4>
+                                <span>IoT Enthusiast</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <p>"As a data analyst, the security and ease of use are a game-changer. I can access and manage everything effortlessly."</p>
+                            <div class="user">
+                                <img src="./images/user2.jpg" alt="User 2">
+                                <h4>Jane Smith</h4>
+                                <span>Data Analyst</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <p>"The remote control feature is incredibly convenient for managing devices from different locations. The interface is smooth and user-friendly!"</p>
+                            <div class="user">
+                                <img src="./images/user3.jpg" alt="User 3">
+                                <h4>Mike Taylor</h4>
+                                <span>Software Dev</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>        
+        
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./JS/main.js"></script>
+    <script src="./JS/search.js"></script>
+</body>
+</html>
