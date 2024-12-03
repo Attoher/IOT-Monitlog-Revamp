@@ -11,6 +11,9 @@ const todoList = document.getElementById('todo-list');
 const showRegister = document.getElementById('show-register');
 const showLogin = document.getElementById('show-login');
 const logoutButton = document.getElementById('logout-button');
+const overlay = document.createElement('div'); // Create overlay dynamically
+overlay.classList.add('overlay'); // Add overlay class
+document.body.appendChild(overlay); // Append overlay to the body
 
 let token = null;
 
@@ -41,13 +44,78 @@ loginForm.addEventListener('submit', async (e) => {
     if (response.ok) {
       const data = await response.json();
       token = data.token;
-      alert('Login successful! Redirecting to dashboard...');
-      window.location.href = 'http://localhost:4000/index.html'; // Redirect to index.html after successful login
+
+      // Show overlay (everything except SweetAlert will turn black)
+      overlay.classList.add('show');
+
+      // SweetAlert popup
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Berhasil!',
+        text: 'Redirecting to dashboard...',
+        timer: 2000,
+        showConfirmButton: true,
+        backdrop: `
+          rgba(0, 0, 0, 1) url('/images/your-image.gif') left top no-repeat
+        `, // Fully opaque black backdrop with optional animated image
+        customClass: {
+          popup: 'bg-white',  // Solid white background for the SweetAlert
+          title: 'text-black', // Optional: Black title text
+          content: 'text-black', // Optional: Black content text
+        },
+      }).then(() => {
+        // Hide the left and right sections
+        document.querySelector('.left').classList.add('hidden');
+        document.querySelector('.right').classList.add('hidden');
+
+        // After 2 seconds, show the sections again
+        setTimeout(() => {
+          document.querySelector('.left').classList.remove('hidden');
+          document.querySelector('.right').classList.remove('hidden');
+        }, 500);
+        // Redirect to the dashboard page
+        window.location.href = 'http://localhost:4000/index.html';
+      });
     } else {
-      alert('Login failed');
+      // If login fails
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Gagal',
+        text: 'Username atau password salah.',
+        customClass: {
+          popup: 'bg-white',  // Solid white background
+        },
+      });
+
+      // Hide the left and right sections for 2 seconds
+      document.querySelector('.left').classList.add('hidden');
+      document.querySelector('.right').classList.add('hidden');
+
+      // After 2 seconds, show the sections again
+      setTimeout(() => {
+        document.querySelector('.left').classList.remove('hidden');
+        document.querySelector('.right').classList.remove('hidden');
+      }, 2000);
     }
   } catch (err) {
-    alert('An error occurred');
+    Swal.fire({
+      icon: 'error',
+      title: 'Terjadi Kesalahan',
+      text: 'Silakan coba lagi nanti.',
+      customClass: {
+        popup: 'bg-white',  // Solid white background
+      },
+    });
+
+    // Hide the left and right sections for 2 seconds
+    document.querySelector('.left').classList.add('hidden');
+    document.querySelector('.right').classList.add('hidden');
+
+    // After 2 seconds, show the sections again
+    setTimeout(() => {
+      document.querySelector('.left').classList.remove('hidden');
+      document.querySelector('.right').classList.remove('hidden');
+    }, 2000);
   }
 });
 
@@ -65,13 +133,56 @@ registerForm.addEventListener('submit', async (e) => {
     });
 
     if (response.ok) {
-      alert('Registration successful! Please login.');
-      registerSection.classList.add('hidden');
-      loginSection.classList.remove('hidden');
+      Swal.fire({
+        icon: 'success',
+        title: 'Registrasi Berhasil!',
+        text: 'Silakan login untuk melanjutkan.',
+        customClass: {
+          popup: 'bg-white',  // Solid white background
+        },
+      }).then(() => {
+        registerSection.classList.add('hidden');
+        loginSection.classList.remove('hidden');
+      });
     } else {
-      alert('Registration failed');
+      // If registration fails
+      Swal.fire({
+        icon: 'error',
+        title: 'Registrasi Gagal',
+        text: 'Username mungkin sudah digunakan.',
+        customClass: {
+          popup: 'bg-white',  // Solid white background
+        },
+      });
+
+      // Hide the left and right sections for 2 seconds
+      document.querySelector('.left').classList.add('hidden');
+      document.querySelector('.right').classList.add('hidden');
+
+      // After 2 seconds, show the sections again
+      setTimeout(() => {
+        document.querySelector('.left').classList.remove('hidden');
+        document.querySelector('.right').classList.remove('hidden');
+      }, 2000);
     }
   } catch (err) {
-    alert('An error occurred');
+    Swal.fire({
+      icon: 'error',
+      title: 'Terjadi Kesalahan',
+      text: 'Silakan coba lagi nanti.',
+      customClass: {
+        popup: 'bg-white',  // Solid white background
+      },
+    });
+
+    // Hide the left and right sections for 2 seconds
+    document.querySelector('.left').classList.add('hidden');
+    document.querySelector('.right').classList.add('hidden');
+
+    // After 2 seconds, show the sections again
+    setTimeout(() => {
+      document.querySelector('.left').classList.remove('hidden');
+      document.querySelector('.right').classList.remove('hidden');
+    }, 2000);
   }
 });

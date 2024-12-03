@@ -1,0 +1,82 @@
+:root {
+    --color-white: #ffffff;
+    --color-light: #f0eff5;
+    --color-gray-light: #86848c;
+    --color-gray-dark: #56555e;
+    --color-dark: #27282f;
+  
+    --color-primary: rgb(71, 7, 234);
+    --color-success: rgb(34, 202, 75);
+    --color-danger: rgb(255, 67, 54);
+    --color-warning: rgb(234, 181, 7);
+    --color-purple: rgb(160, 99, 245);
+  
+    --color-primary-light: rgba(71, 7, 234, 0.2);
+    --color-success-light: rgba(34, 202, 75, 0.2);
+    --color-danger-light: rgba(255, 67, 54, 0.2);
+    --color-purple-light: rgba(160, 99, 245, 0.2);
+  
+    --card-padding: 1.6rem;
+    --padding-1: 1rem;
+    --padding-2: 8px;
+  
+    --card-border-radius: 1.6rem;
+    --border-radius-1: 1rem;
+    --border-radius-2: 6px;
+  }
+
+  body {
+    background-color: #000000;
+  }
+
+/* Untuk mengubah latar belakang utama SweetAlert2 */
+.swal2-container {
+    background: var(--color-dark); /* Warna semi-transparan */
+  }
+  
+  /* Untuk mengubah container pop-up */
+  /* SweetAlert2 Popup Styling */
+.swal2-popup {
+    display: flex;
+    background-color: var(--color-dark); /* Warna container gelap */
+    color: var(--color-white); /* Warna teks putih */
+    border-radius: 12px; /* Membuat sudut membulat */
+    box-shadow: 0 4px 15px var(--color-dark); /* Efek bayangan lembut */
+    padding: 30px; /* Memberikan padding agar konten tidak terlalu rapat */
+    animation: popupAnimation 0.5s ease-out; /* Menambahkan animasi pop-up */
+}
+
+/* Background luar (overlay) */
+.swal2-container {
+    background: var(--color-dark); /* Overlay semi transparan */
+}
+  
+  /* Tambahkan efek untuk tombol dalam SweetAlert */
+  .swal2-confirm {
+    background-color: var(--color-primary); /* Warna tombol utama */
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius-2);
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
+  .swal2-cancel {
+    background-color: var(--color-danger); /* Warna tombol pembatalan */
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius-2);
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
+  /* Hover efek tombol */
+  .swal2-confirm:hover {
+    background-color: rgb(86, 26, 237);
+  }
+  
+  .swal2-cancel:hover {
+    background-color: #e60000;
+  }
+
+  
