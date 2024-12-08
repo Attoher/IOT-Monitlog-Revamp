@@ -137,12 +137,26 @@ registerForm.addEventListener('submit', async (e) => {
         icon: 'success',
         title: 'Registrasi Berhasil!',
         text: 'Silakan login untuk melanjutkan.',
+        backdrop: `
+          rgba(0, 0, 0, 1) url('/images/your-image.gif') left top no-repeat
+        `, // Fully opaque black backdrop with optional animated image
         customClass: {
-          popup: 'bg-white',  // Solid white background
+          popup: 'bg-white',  // Solid white background for the SweetAlert
+          title: 'text-black', // Optional: Black title text
+          content: 'text-black', // Optional: Black content text
         },
       }).then(() => {
-        registerSection.classList.add('hidden');
-        loginSection.classList.remove('hidden');
+        // Hide the left and right sections
+        document.querySelector('.left').classList.add('hidden');
+        document.querySelector('.right').classList.add('hidden');
+
+        // After 2 seconds, show the sections again
+        setTimeout(() => {
+          document.querySelector('.left').classList.remove('hidden');
+          document.querySelector('.right').classList.remove('hidden');
+        }, 500);
+        // Redirect to the dashboard page
+        window.location.href = 'http://localhost:4000/index.html';
       });
     } else {
       // If registration fails
