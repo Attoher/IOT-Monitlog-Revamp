@@ -875,6 +875,10 @@ main .recent-transactions .card-details .card {
     left: 10px;
 }
 
+.file-input {
+    cursor: pointer;
+}
+
 input:checked + .slider {
     background-color: #4CAF50;
 }
@@ -882,4 +886,3 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(20px);
 }
-  
