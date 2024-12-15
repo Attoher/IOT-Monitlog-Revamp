@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const chartContainer = document.querySelector("#chartContainer");
     const pageStatus = document.querySelector("#pageStatus");

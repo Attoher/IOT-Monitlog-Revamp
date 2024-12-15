@@ -1,0 +1,440 @@
+[
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-01-01T10:00:00Z",
+        "_value": 21.5,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "1"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-01-01T10:00:00Z",
+        "_value": 23.2,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "2"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-01-01T10:00:00Z",
+        "_value": 19.8,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "3"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-01-01T10:00:00Z",
+        "_value": 25.7,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "4"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-01-01T10:00:00Z",
+        "_value": 20.3,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "5"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-02-01T10:00:00Z",
+        "_value": 22.1,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "1"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-02-01T10:00:00Z",
+        "_value": 26.4,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "2"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-02-01T10:00:00Z",
+        "_value": 23.5,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "3"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-02-01T10:00:00Z",
+        "_value": 18.7,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "4"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "_time": "2024-02-01T10:00:00Z",
+        "_value": 24.3,
+        "_field": "Temperature",
+        "_measurement": "Fan",
+        "sensor_id": "5"
+    },
+    {
+        "result": "",
+        "table": 0,
+        "time": "2024-08-01T10:00:00Z",
+        "value": 27.2,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 1
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-08-01T10:00:00Z",
+        "value": 22.1,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 2
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-08-01T10:00:00Z",
+        "value": 24.3,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 3
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-08-01T10:00:00Z",
+        "value": 25.5,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 4
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-08-01T10:00:00Z",
+        "value": 22.9,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 5
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-09-01T10:00:00Z",
+        "value": 18.9,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 1
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-09-01T10:00:00Z",
+        "value": 20.3,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 2
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-09-01T10:00:00Z",
+        "value": 21.6,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 3
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-09-01T10:00:00Z",
+        "value": 23.2,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 4
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-09-01T10:00:00Z",
+        "value": 24.8,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 5
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-10-01T10:00:00Z",
+        "value": 22.4,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 1
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-10-01T10:00:00Z",
+        "value": 26.3,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 2
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-10-01T10:00:00Z",
+        "value": 23.7,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 3
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-10-01T10:00:00Z",
+        "value": 19.1,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 4
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-10-01T10:00:00Z",
+        "value": 18.7,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 5
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-11-01T10:00:00Z",
+        "value": 21.9,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 1
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-11-01T10:00:00Z",
+        "value": 25.5,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 2
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-11-01T10:00:00Z",
+        "value": 22.8,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 3
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-11-01T10:00:00Z",
+        "value": 23.4,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 4
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-11-01T10:00:00Z",
+        "value": 25.9,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 5
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-12-01T10:00:00Z",
+        "value": 19.5,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 1
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-12-01T10:00:00Z",
+        "value": 20.8,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 2
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-12-01T10:00:00Z",
+        "value": 23.0,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 3
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-12-01T10:00:00Z",
+        "value": 24.2,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 4
+      },
+      {
+        "result": "",
+        "table": 0,
+        "time": "2024-12-01T10:00:00Z",
+        "value": 21.6,
+        "field": "Temperature",
+        "measurement": "Fan",
+        "sensor_id": 5
+      }
+    ]
+    
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Iot Monitlog</title>
+        <link rel="icon" href="./images/IOT.png" type="image/x-icon">
+        
+        <!-- MATERIAL ICONS CDN -->
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet" />
+        
+        <!-- GOOGLE FONTS (POPPINS) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
+        <!-- STYLESHEET -->
+        <link rel="stylesheet" href="./CSS/style.css">
+        <link rel="stylesheet" href="./CSS/analytics.css">
+    </head>
+    <body>
+        <div class="loader">
+            <div class="spinner"></div>
+        </div>    
+        <nav>   
+            <div class="container">
+                <a href="index.html"><img src="./images/Iot Monitlog.png" style="width: 150px; border-radius: 100%;" class="logo" alt="Logo"></a>
+                
+                <div class="search-bar">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="search" placeholder="Search">
+                </div>
+                
+                <div class="profile-area">
+                    <div class="theme-btn">
+                        <span class="material-symbols-outlined active">light_mode</span>
+                        <span class="material-symbols-outlined">dark_mode</span>
+                    </div>
+                    
+                    <div class="profile">
+                        <div class="profile-photo">
+                            <img src="./images/Troll.webp" alt="Profile Photo">
+                        </div>
+                        <a href="http://localhost:3000/0login.html"><h5>User</h5></a>
+                        <span class="material-symbols-outlined">keyboard_arrow_down</span>
+                    </div>
+                    <button id="menu-btn">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <main>
+            <aside>
+                <button id="close-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <div class="sidebar">
+                    <a href="1dashboard.html">
+                        <span class="material-icons-sharp">dashboard</span>
+                        <h4>Dashboard</h4>
+                    </a>
+                    <a href="2analytics.html" class="active">
+                        <span class="material-icons-sharp">pie_chart</span>
+                        <h4>Analytics</h4>
+                    </a>
+                    <a href="3message.html">
+                        <span class="material-icons-sharp">message</span>
+                        <h4>Message</h4>
+                    </a>
+                    <a href="4settings.html">
+                        <span class="material-icons-sharp">settings</span>
+                        <h4>Settings</h4>
+                    </a>
+                </div>
+                <div class="updates">
+                    <span class="material-icons-sharp">update</span>
+                    <h4>Update Available</h4>
+                    <small>Security Update</small>
+                    <small>General Update</small>
+                    <a href="2analytics.html">Update Now</a>
+                </div>
+            </aside>
+            <section class="middle">
+                <div class="dashboard">
+                    <div class="header">
+                      <div class="header-item">Suhu</div>
+                      <div class="header-item">Kelembapan</div>
+                      <div class="header-item">Konsumsi Listrik</div>
+                    </div>
+                    <div class="content">
+                      <div class="card">
+                        <div class="info">
+                          <h2>40 C</h2>
+                          <h2>AC</h2>
+                          <img src="images/Temp.png" alt="Thermometer" class="icon">
+                        </div>
+                        <p class="status panas">Panas <span class="indicator red"></span></h2>
+                      </div>
+                      <div class="card">
+                        <div class="info">
+                          <h2>50%</h2>
+                        </div>
+                        <p class="status aman">Aman <span class="indicator green"></span></h2>
+                      </div>
+                      <div class="card">
+                        <div class="info">
+                          <h2>200 V</h2>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="./JS/main.js"></script>
+        <script src="./JS/search.js"></script>
+    </body>
+    </html>

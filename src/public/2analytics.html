@@ -17,8 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- STYLESHEET -->
-    <link rel="stylesheet" href="./CSS/style.css">
-    <link rel="stylesheet" href="./CSS/analytics.css">
+    <link rel="stylesheet" href="/CSS/style.css">
 </head>
 <body>
     <div class="loader">
@@ -75,47 +74,244 @@
                     <h4>Settings</h4>
                 </a>
             </div>
+            <!-- <div class="updates">
+                <h4>Unggah JSON</h4>
+                <p>Unggah file JSON dari perangkat IoT Anda untuk melihat datanya.</p>
+                <label for="file-upload" class="upload-label">
+                    <a class="file-input"><input id="file-upload" type="file" accept=".json" hidden />Pilih File</a>
+                </label>
+                <p id="file-name">Belum ada file yang dipilih</p> 
+            </div> -->
             <div class="updates">
                 <span class="material-icons-sharp">update</span>
                 <h4>Update Available</h4>
                 <small>Security Update</small>
                 <small>General Update</small>
-                <a href="2analytics.html">Update Now</a>
+                <a href="1dashboard.html">Update Now</a>
             </div>
         </aside>
+          
         <section class="middle">
-            <div class="dashboard">
-                <div class="header">
-                  <div class="header-item">Suhu</div>
-                  <div class="header-item">Kelembapan</div>
-                  <div class="header-item">Konsumsi Listrik</div>
+            <div class="fast-activate">
+                <h2>Chart</h2>
+                <div id="line-chart-btn" class="badges">
+                    <a class="badge">Line</a>
                 </div>
-                <div class="content">
-                  <div class="card">
-                    <div class="info">
-                      <h2>40 C</h2>
-                      <h2>AC</h2>
-                      <img src="images/Temp.png" alt="Thermometer" class="icon">
-                    </div>
-                    <p class="status panas">Panas <span class="indicator red"></span></h2>
-                  </div>
-                  <div class="card">
-                    <div class="info">
-                      <h2>50%</h2>
-                    </div>
-                    <p class="status aman">Aman <span class="indicator green"></span></h2>
-                  </div>
-                  <div class="card">
-                    <div class="info">
-                      <h2>200 V</h2>
-                    </div>
-                  </div>
+                <div id="bar-chart-btn" class="badges">
+                    <a class="badge">Bar</a>
+                </div>
+                <div id="pie-chart-btn" class="badges">
+                    <a class="badge">Pie</a>
                 </div>
             </div>
+            <div class="fast-activate">
+                <h2>Filter</h2>
+                <div class="badges">
+                    <div id="all-btn" class="badge">
+                        <a>All</a>    
+                    </div>
+                </div>
+                <div class="badges">
+                    <div id="suhu-btn" class="badge">
+                        <a>Suhu</a>    
+                    </div>
+                </div>
+                <div class="badges">
+                    <div id="kelembapan-btn" class="badge">
+                        <a>Kelembapan</a>    
+                    </div>
+                </div>
+                <div class="badges">
+                   <div id="konsumsi-listrik-btn" class="badge">
+                        <a">Konsumsi Listrik</a>    
+                    </div>
+                </div>
+            </div>
+            <div class="fast-activate">
+                <h2>Fast Activate</h2>
+                <div class="badges">
+                    <div class="badge">
+                        <span class="material-icons-sharp">add</span>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-primary"></span>
+                        <div>
+                            <h5>Fan</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-danger"></span>
+                        <div>
+                            <h5>Bar Lamp</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-primary"></span>
+                        <div>
+                            <h5>Door Light</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-danger"></span>
+                        <div>
+                            <h5>AC 1</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-primary"></span>
+                        <div>
+                            <h5>AC 2</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-primary"></span>
+                        <div>
+                            <h5>AC 3</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-danger"></span>
+                        <div>
+                            <h5>AC 4</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="badge">
+                        <span class="bg-primary"></span>
+                        <div>
+                            <h5>AC 5</h5>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><br>
+            <div class="chart-container" id="chartContainer"></div>
+            
+        </section>
+
+        <section class="right">
+            <div class="investments">
+                <div class="header">
+                    <h2>Avg Temp (Monthly)</h2>
+                    <a href="#">More <span class="material-icons-sharp">chevron_right</span></a>
+                </div>
+                <div class="item">
+                    <img src="./images/AC.png">
+                    <h4>AC</h4>
+                    <div class="date-time">
+                        <p>Nov, 2024</p>
+                        <small class="text-muted">9:14 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p>18°C</p>
+                    </div>
+                 
+                </div>
+                <div class="item">
+                    <img src="./images/Temp.png" alt="Temperature Icon" class="item-image">
+                    <h4 class="item-title">Room</h4>
+                    <div class="date-time">
+                        <p class="date">Nov, 2024</p>
+                        <small class="text-muted time">4:02 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p class="temp-value">25°C</p>
+                    </div>
+                </div>                
+                <div class="item">
+                    <img src="./images/Fridge.png">
+                    <h4>Fridge</h4>
+                    <div class="date-time">
+                        <p>Nov, 2024</p>
+                        <small class="text-muted">8:17 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p>4°C</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-transactions">
+                <div class="header">
+                    <h2>Recent Temperature</h2>
+                    <a href="#">More <span class="material-icons-sharp">chevron_right</span></a>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-purple-light">
+                            <span class="material-symbols-outlined purple">mode_fan</span>
+                        </div>
+                        <div class="details">
+                            <h4>AC</h4>
+                            <p>20.11.2024</p>
+                        </div>
+                    </div>
+                    <h4>18°C</h4>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-danger-light">
+                            <span class="material-symbols-outlined danger">device_thermostat</span>
+                        </div>
+                        <div class="details">
+                            <h4>Room Temperature</h4>
+                            <p>21.11.2024</p>
+                        </div>
+                    </div>
+                    <h4>27°C</h4>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-success-light">
+                            <span class="material-symbols-outlined success">kitchen</span>
+                        </div>
+                        <div class="details">
+                            <h4>Fridge</h4>
+                            <p>15.11.2024</p>
+                        </div>
+                    </div>
+            
+                    <h4>4°C</h4>
+                </div>
+            </div><br>
+            <a class="badge" id="prev-chart-btn">Previous</a>
+            <a class="badge" id="next-chart-btn">Next</a><br>
+            <h2 id="pageStatus"></h2>
         </section>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./JS/main.js"></script>
+    <script src="./JS/charts.js"></script>
     <script src="./JS/search.js"></script>
+    <script src="./JS/file.js"></script>
 </body>
 </html>

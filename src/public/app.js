@@ -200,3 +200,45 @@ registerForm.addEventListener('submit', async (e) => {
     }, 2000);
   }
 });
+
+
+const fileInput = document.getElementById('file-upload');
+const uploadButton = document.getElementById('upload-btn');
+const fileNameDisplay = document.getElementById('file-name');
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (file) {
+    fileNameDisplay.textContent = `File dipilih: ${file.name}`;
+  } else {
+    fileNameDisplay.textContent = 'Belum ada file yang dipilih';
+  }
+});
+
+uploadButton.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Silakan pilih file JSON terlebih dahulu.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('http://localhost:4000/upload-json', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      alert(`File berhasil diunggah! Data diterima: ${JSON.stringify(result)}`);
+    } else {
+      alert('Gagal mengunggah file.');
+    }
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    alert('Terjadi kesalahan saat mengunggah file.');
+  }
+});

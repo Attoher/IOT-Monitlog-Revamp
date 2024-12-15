@@ -1,5 +1,71 @@
+#group,false,false,false,false,true,true,true
+#datatype,string,long,dateTime:RFC3339,double,string,string,string
+#default,_result,,,,,,
+,result,table,_time,_value,_field,_measurement,sensor_id
+,,0,2024-01-01T10:00:00Z,21.5,Temperature,Fan,1
+,,0,2024-01-01T10:00:00Z,23.2,Temperature,Fan,2
+,,0,2024-01-01T10:00:00Z,19.8,Temperature,Fan,3
+,,0,2024-01-01T10:00:00Z,25.7,Temperature,Fan,4
+,,0,2024-01-01T10:00:00Z,20.3,Temperature,Fan,5
+,,0,2024-02-01T10:00:00Z,22.1,Temperature,Fan,1
+,,0,2024-02-01T10:00:00Z,26.4,Temperature,Fan,2
+,,0,2024-02-01T10:00:00Z,23.5,Temperature,Fan,3
+,,0,2024-02-01T10:00:00Z,18.7,Temperature,Fan,4
+,,0,2024-02-01T10:00:00Z,24.3,Temperature,Fan,5
+,,0,2024-03-01T10:00:00Z,24.0,Temperature,Fan,1
+,,0,2024-03-01T10:00:00Z,19.9,Temperature,Fan,2
+,,0,2024-03-01T10:00:00Z,22.8,Temperature,Fan,3
+,,0,2024-03-01T10:00:00Z,23.6,Temperature,Fan,4
+,,0,2024-03-01T10:00:00Z,21.7,Temperature,Fan,5
+,,0,2024-04-01T10:00:00Z,26.1,Temperature,Fan,1
+,,0,2024-04-01T10:00:00Z,27.8,Temperature,Fan,2
+,,0,2024-04-01T10:00:00Z,24.9,Temperature,Fan,3
+,,0,2024-04-01T10:00:00Z,22.4,Temperature,Fan,4
+,,0,2024-04-01T10:00:00Z,20.8,Temperature,Fan,5
+,,0,2024-05-01T10:00:00Z,19.5,Temperature,Fan,1
+,,0,2024-05-01T10:00:00Z,20.1,Temperature,Fan,2
+,,0,2024-05-01T10:00:00Z,18.4,Temperature,Fan,3
+,,0,2024-05-01T10:00:00Z,22.3,Temperature,Fan,4
+,,0,2024-05-01T10:00:00Z,27.0,Temperature,Fan,5
+,,0,2024-06-01T10:00:00Z,25.2,Temperature,Fan,1
+,,0,2024-06-01T10:00:00Z,21.0,Temperature,Fan,2
+,,0,2024-06-01T10:00:00Z,26.5,Temperature,Fan,3
+,,0,2024-06-01T10:00:00Z,24.3,Temperature,Fan,4
+,,0,2024-06-01T10:00:00Z,23.0,Temperature,Fan,5
+,,0,2024-07-01T10:00:00Z,21.7,Temperature,Fan,1
+,,0,2024-07-01T10:00:00Z,23.5,Temperature,Fan,2
+,,0,2024-07-01T10:00:00Z,24.9,Temperature,Fan,3
+,,0,2024-07-01T10:00:00Z,26.2,Temperature,Fan,4
+,,0,2024-07-01T10:00:00Z,20.7,Temperature,Fan,5
+,,0,2024-08-01T10:00:00Z,27.2,Temperature,Fan,1
+,,0,2024-08-01T10:00:00Z,22.1,Temperature,Fan,2
+,,0,2024-08-01T10:00:00Z,24.3,Temperature,Fan,3
+,,0,2024-08-01T10:00:00Z,25.5,Temperature,Fan,4
+,,0,2024-08-01T10:00:00Z,22.9,Temperature,Fan,5
+,,0,2024-09-01T10:00:00Z,18.9,Temperature,Fan,1
+,,0,2024-09-01T10:00:00Z,20.3,Temperature,Fan,2
+,,0,2024-09-01T10:00:00Z,21.6,Temperature,Fan,3
+,,0,2024-09-01T10:00:00Z,23.2,Temperature,Fan,4
+,,0,2024-09-01T10:00:00Z,24.8,Temperature,Fan,5
+,,0,2024-10-01T10:00:00Z,22.4,Temperature,Fan,1
+,,0,2024-10-01T10:00:00Z,26.3,Temperature,Fan,2
+,,0,2024-10-01T10:00:00Z,23.7,Temperature,Fan,3
+,,0,2024-10-01T10:00:00Z,19.1,Temperature,Fan,4
+,,0,2024-10-01T10:00:00Z,18.7,Temperature,Fan,5
+,,0,2024-11-01T10:00:00Z,21.9,Temperature,Fan,1
+,,0,2024-11-01T10:00:00Z,25.5,Temperature,Fan,2
+,,0,2024-11-01T10:00:00Z,22.8,Temperature,Fan,3
+,,0,2024-11-01T10:00:00Z,23.4,Temperature,Fan,4
+,,0,2024-11-01T10:00:00Z,25.9,Temperature,Fan,5
+,,0,2024-12-01T10:00:00Z,19.5,Temperature,Fan,1
+,,0,2024-12-01T10:00:00Z,20.8,Temperature,Fan,2
+,,0,2024-12-01T10:00:00Z,23.0,Temperature,Fan,3
+,,0,2024-12-01T10:00:00Z,24.2,Temperature,Fan,4
+,,0,2024-12-01T10:00:00Z,21.6,Temperature,Fan,5
+
+
 import express, { Request, Response } from 'express';
-import { InfluxDB,WriteApi, QueryApi } from '@influxdata/influxdb-client';
+import { InfluxDB, QueryApi } from '@influxdata/influxdb-client';
 import dotenv from 'dotenv';
 import path from 'path';
 import sequelize from './models/index';
