@@ -1,21 +1,26 @@
 import express, { Request, Response } from 'express';
-import { InfluxDB, WriteApi, QueryApi } from '@influxdata/influxdb-client';
+import { InfluxDB,WriteApi, QueryApi } from '@influxdata/influxdb-client';
 import dotenv from 'dotenv';
 import path from 'path';
-import sequelize from './models/index'; // Koneksi ke database dengan sequelize
+import sequelize from './models/index';
+import appLogin from './app';
+import fs from 'fs';
 import multer from 'multer';
-import appLogin from './app'; // Import appLogin dari file lain
+
 
 dotenv.config();
 
 const upload = multer({ dest: 'uploads/' });
+
 const app = express();
 const port = 3000;
 
-// Konfigurasi InfluxDB
 const influxDBUrl = 'http://localhost:8086';
 const token = 'aflLC2CIRvmQWgF4gGEga-7O3fGEPtEDuTwcYtQtqc_rd1wK-FM9uxH6o_mrRx-lTfs7JuMhzQJxDY1G74rB5A==';
 const org = '379932e683da78f5';
+
+
+// Buckets for Suhu, Kelembapan, and KonsumsiListrik
 const suhuBucket = 'dataIotSuhu';
 const kelembapanBucket = 'dataIOTKelembapan';
 const listrikBucket = 'dataIOTListrik';
@@ -23,12 +28,10 @@ const listrikBucket = 'dataIOTListrik';
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Untuk static file seperti HTML, CSS, JS
+appLogin.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Gabungkan rute dari appLogin
-app.use(appLogin);
-
-// Helper function: Query data dari InfluxDB
+// Helper Function: Query data dari InfluxDB
 const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
   const queryApi: QueryApi = influxDB.getQueryApi(org);
   const query = `from(bucket: "${bucket}") |> range(start: 0)`; // Sesuaikan range waktu
@@ -80,27 +83,67 @@ app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
   }
 });
 
-// Rute utama untuk aplikasi login
-app.get('/', (req, res) => {
+// Endpoint untuk halaman utama login
+appLogin.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server untuk aplikasi IoT dan login pada port 3000
-const startServer = async () => {
+
+const jsonToLineProtocol = (jsonData: Record<string, any>[], measurement: string): string => {
+  return jsonData
+    .map(
+      (item) =>
+        `${measurement},type=${item.type || 'default'} value=${item.value || 0} ${item.timestamp || Date.now()}`
+    )
+    .join('\n');
+};
+
+
+// Endpoint to upload JSON file and convert to line protocol
+app.post('/upload-json', upload.single('file'), async (req: Request, res: Response) => {
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).send('No file uploaded.');
+  }
+
   try {
-    // Authenticate database login (PostgreSQL)
+    const data = fs.readFileSync(file.path, 'utf-8');
+    const jsonData = JSON.parse(data);
+
+    const lineProtocol = jsonToLineProtocol(jsonData, 'iot_data');
+
+    const writeApi: WriteApi = influxDB.getWriteApi(org, suhuBucket);
+    writeApi.writeRecords(lineProtocol.split('\n'));
+
+    await writeApi.close();
+
+    fs.unlinkSync(file.path);
+
+    res.status(200).send('File uploaded and data written to InfluxDB.');
+  } catch (error) {
+    console.error('Error processing file:', error);
+    res.status(500).send('Error processing file.');
+  }
+});
+
+const startServerIot = async () => {
+  try {
     await sequelize.authenticate();
     console.log('Database connected!');
     await sequelize.sync();
-
-    // Start aplikasi IoT dan login di port 3000
-    app.listen(port, () => {
+    const loginPort = 3000;
+    appLogin.listen(loginPort, () => {
       console.log(`Server running at http://localhost:${port}`);
     });
+
+    const iotPort = 4000; // Port untuk appIot
+    app.listen(iotPort, () => {
+      console.log(`AppIot running at http://localhost:${iotPort}`);
+    });
+
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 };
-
-// Mulai server
-startServer();
+startServerIot();

@@ -74,7 +74,7 @@ loginForm.addEventListener('submit', async (e) => {
           document.querySelector('.right').classList.remove('hidden');
         }, 500);
         // Redirect to the dashboard page
-        window.location.href = 'http://localhost:4000/index.html';
+        window.location.href = 'index.html';
       });
     } else {
       // If login fails
@@ -156,7 +156,7 @@ registerForm.addEventListener('submit', async (e) => {
           document.querySelector('.right').classList.remove('hidden');
         }, 500);
         // Redirect to the dashboard page
-        window.location.href = 'http://localhost:4000/index.html';
+        window.location.href = 'index.html';
       });
     } else {
       // If registration fails
@@ -215,30 +215,3 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-uploadButton.addEventListener('click', async () => {
-  const file = fileInput.files[0];
-  if (!file) {
-    alert('Silakan pilih file JSON terlebih dahulu.');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('file', file);
-
-  try {
-    const response = await fetch('http://localhost:4000/upload-json', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      alert(`File berhasil diunggah! Data diterima: ${JSON.stringify(result)}`);
-    } else {
-      alert('Gagal mengunggah file.');
-    }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    alert('Terjadi kesalahan saat mengunggah file.');
-  }
-});
