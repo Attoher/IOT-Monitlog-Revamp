@@ -106,38 +106,100 @@ router.get('/data/konsumsiListrik', async (req, res) => {
   }
 });
 
-// Rute POST untuk menulis data ke InfluxDB
-router.post('/data', async (req, res) => {
-  const { suhu } = req.body;
+interface DataPoint {
+  _measurement?: string;
+  sensor_id?: string;
+  _field: string;
+  _value: number;
+  _time: string;
+}
 
-  // Validasi input
-  if (!suhu || !Array.isArray(suhu) || !suhu.every(entry => entry._field && entry._value && entry._time)) {
+router.post('/data', async (req, res) => {
+  const { suhu, kelembapan, konsumsiListrik } = req.body;
+
+  // Validasi input untuk suhu
+  if (suhu && (!Array.isArray(suhu) || !suhu.every((entry: DataPoint) => entry._field && entry._value && entry._time))) {
     return res.status(400).json({
-      error: 'Invalid input. Ensure "suhu" is provided as an array with valid entries (_field, _value, _time).',
+      error: 'Invalid input for suhu. Ensure "suhu" is provided as an array with valid entries (_field, _value, _time).',
+    });
+  }
+
+  // Validasi input untuk kelembapan
+  if (kelembapan && (!Array.isArray(kelembapan) || !kelembapan.every((entry: DataPoint) => entry._field && entry._value && entry._time))) {
+    return res.status(400).json({
+      error: 'Invalid input for kelembapan. Ensure "kelembapan" is provided as an array with valid entries (_field, _value, _time).',
+    });
+  }
+
+  // Validasi input untuk konsumsiListrik
+  if (konsumsiListrik && (!Array.isArray(konsumsiListrik) || !konsumsiListrik.every((entry: DataPoint) => entry._field && entry._value && entry._time))) {
+    return res.status(400).json({
+      error: 'Invalid input for konsumsiListrik. Ensure "konsumsiListrik" is provided as an array with valid entries (_field, _value, _time).',
     });
   }
 
   try {
-    const writeApi = influxDB.getWriteApi(org, suhuBucket);
-    writeApi.useDefaultTags({ location: 'office' });
+    // Menulis data suhu ke InfluxDB jika ada
+    if (suhu) {
+      const writeApiSuhu = influxDB.getWriteApi(org, suhuBucket);
+      writeApiSuhu.useDefaultTags({ location: 'office' });
 
-    suhu.forEach(entry => {
-      const point = new Point(entry._measurement || 'Room') // Default measurement
-        .tag('sensor_id', entry.sensor_id || 'unknown') // Tambahkan tag
-        .floatField(entry._field, entry._value) // Gunakan `floatField` untuk nilai numerik
-        .timestamp(new Date(entry._time).getTime() * 1e6); // Konversi timestamp ke nanosecond
+      suhu.forEach((entry: DataPoint) => {
+        const point = new Point(entry._measurement || 'Room') // Default measurement
+          .tag('sensor_id', entry.sensor_id || 'unknown') // Tambahkan tag
+          .floatField(entry._field, entry._value) // Gunakan `floatField` untuk nilai numerik
+          .timestamp(new Date(entry._time).getTime() * 1e6); // Konversi timestamp ke nanosecond
 
-      writeApi.writePoint(point);
-    });
+        writeApiSuhu.writePoint(point);
+      });
 
-    await writeApi.close();
+      await writeApiSuhu.close();
+    }
 
-    res.status(201).json({ message: 'Data written successfully.' });
+    // Menulis data kelembapan ke InfluxDB jika ada
+    if (kelembapan) {
+      const writeApiKelembapan = influxDB.getWriteApi(org, kelembapanBucket);
+      writeApiKelembapan.useDefaultTags({ location: 'office' });
+
+      kelembapan.forEach((entry: DataPoint) => {
+        const point = new Point(entry._measurement || 'kamarmandi') // Default measurement
+          .tag('sensor_id', entry.sensor_id || 'unknown') // Tambahkan tag untuk sensor_id
+          .floatField(entry._field, entry._value) // Gunakan `floatField` untuk nilai kelembapan
+          .timestamp(new Date(entry._time).getTime() * 1e6); // Konversi timestamp ke nanosecond
+
+        writeApiKelembapan.writePoint(point);
+      });
+
+      await writeApiKelembapan.close();
+    }
+
+    // Menulis data konsumsiListrik ke InfluxDB jika ada
+    if (konsumsiListrik) {
+      const writeApiKonsumsiListrik = influxDB.getWriteApi(org, listrikBucket);
+      writeApiKonsumsiListrik.useDefaultTags({ location: 'office' });
+
+      konsumsiListrik.forEach((entry: DataPoint) => {
+        const point = new Point(entry._measurement || 'ElectricityConsumption') // Default measurement
+          .tag('sensor_id', entry.sensor_id || 'unknown') // Tambahkan tag untuk sensor_id
+          .floatField(entry._field, entry._value) // Gunakan `floatField` untuk nilai konsumsi listrik
+          .timestamp(new Date(entry._time).getTime() * 1e6); // Konversi timestamp ke nanosecond
+
+        writeApiKonsumsiListrik.writePoint(point);
+      });
+
+      await writeApiKonsumsiListrik.close();
+    }
+
+    res.status(201).json({ message: 'Data written successfully' });
   } catch (error) {
     console.error('Error writing data to InfluxDB:', error);
     res.status(500).json({ error: 'Failed to write data to InfluxDB.' });
   }
 });
+
+
+
+
 
 
   
