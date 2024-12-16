@@ -1,14 +1,12 @@
 import express, { Request, Response } from 'express';
-import { InfluxDB, WriteApi, QueryApi } from '@influxdata/influxdb-client';
+import { InfluxDB, Point , QueryApi } from '@influxdata/influxdb-client';
 import dotenv from 'dotenv';
 import path from 'path';
 import sequelize from './models/index'; // Koneksi ke database dengan sequelize
-import multer from 'multer';
 import appLogin from './app'; // Import appLogin dari file lain
-
+import router from './routes/userRoutes';
 dotenv.config();
 
-const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 3000;
 
@@ -20,13 +18,23 @@ const suhuBucket = 'dataIotSuhu';
 const kelembapanBucket = 'dataIOTKelembapan';
 const listrikBucket = 'dataIOTListrik';
 
+
+
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware untuk body parsing JSON
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Untuk static file seperti HTML, CSS, JS
+
+// Middleware untuk API dengan prefix '/api'
+app.use('/api', router);
+
 
 // Gabungkan rute dari appLogin
 app.use(appLogin);
+
 
 // Helper function: Query data dari InfluxDB
 const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
@@ -84,6 +92,37 @@ app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.post('/data', async (req: Request, res: Response) => {
+  const { bucket, data } = req.body;
+
+  // Validasi input
+  if (!bucket || !data || typeof data !== 'object') {
+    return res.status(400).json({ error: 'Invalid input. Ensure bucket and data are provided.' });
+  }
+
+  try {
+    // Buat instance WriteApi untuk menulis data ke InfluxDB
+    const writeApi = influxDB.getWriteApi(org, bucket);
+    writeApi.useDefaultTags({ source: 'postman' }); // Tambahkan tag default
+
+    // Buat Point dari data yang dikirim
+    const point = new Point('measurement')
+      .tag('source', 'postman') // Tambahkan tag (opsional)
+      .floatField('value', data.value) // Field utama
+      .timestamp(new Date());
+
+    // Tulis data ke InfluxDB
+    writeApi.writePoint(point);
+    await writeApi.close();
+
+    res.status(201).json({ message: 'Data written to InfluxDB successfully.' });
+  } catch (error) {
+    console.error('Error writing data to InfluxDB:', error);
+    res.status(500).json({ error: 'Failed to write data to InfluxDB.' });
+  }
+});
+
 
 // Start server untuk aplikasi IoT dan login pada port 3000
 const startServer = async () => {

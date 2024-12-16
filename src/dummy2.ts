@@ -9,82 +9,73 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentDataType = ''; // Default data type is 'All' (no filter applied)
     let currentChartIndex = 0; // Index for the active chart
     let charts = []; // Array to store rendered charts
-  
+
     // Hide the Prev and Next buttons by default
     prevBtn.style.display = "none";
     nextBtn.style.display = "none";
 
-    async function fetchData(type) {
-        try {
-            const response = await fetch(`http://localhost:3000/data/${type}`);
-            if (!response.ok) {
-                console.error(`Failed to fetch ${type} data:`, response.status, response.statusText);
-                throw new Error(`Failed to fetch ${type} data`);
-            }
-            return response.json();
-        } catch (error) {
-            console.error(`Error in fetchData(${type}):`, error);
-            throw error;
-        }
-    }
-    
+    // Fetch data for all measurements
     async function fetchAllData() {
         try {
-            const kelembapanData = await fetchData('kelembapan');
-            const suhuData = await fetchData('suhu');
-            const konsumsiListrikData = await fetchData('konsumsiListrik');
+            const kelembapanResponse = await fetch('/data/kelembapan');
+            const suhuResponse = await fetch('/data/suhu');
+            const konsumsiListrikResponse = await fetch('/data/konsumsiListrik');
+
+            const kelembapanData = await kelembapanResponse.json();
+            const suhuData = await suhuResponse.json();
+            const konsumsiListrikData = await konsumsiListrikResponse.json();
+
             return { kelembapanData, suhuData, konsumsiListrikData };
         } catch (error) {
-            console.error('Error in fetchAllData:', error);
-            throw error;
+            console.error('Error fetching all data:', error);
+            return { kelembapanData: [], suhuData: [], konsumsiListrikData: [] };  // Return empty arrays on error
         }
     }
-    
-  
+
     // Event listener for chart type buttons
     document.querySelector("#line-chart-btn").addEventListener("click", function () {
         currentChartType = 'line';
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender(); // Fetch and render chart with updated type and data
     });
-  
+
     document.querySelector("#bar-chart-btn").addEventListener("click", function () {
         currentChartType = 'bar';
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender(); // Fetch and render chart with updated type and data
     });
-  
+
     document.querySelector("#pie-chart-btn").addEventListener("click", function () {
         currentChartType = 'pie';
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender(); // Fetch and render chart with updated type and data
     });
-  
+
     // Event listeners for data filters (All, Kelembapan, Suhu, Konsumsi Listrik)
     document.querySelector("#all-btn").addEventListener("click", function () {
         currentDataType = 'All'; // Set data type to 'All'
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender();
     });
-  
+
     document.querySelector("#kelembapan-btn").addEventListener("click", function () {
         currentDataType = 'kelembapan'; // Filter by kelembapan
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender();
     });
-  
+
     document.querySelector("#suhu-btn").addEventListener("click", function () {
         currentDataType = 'suhu'; // Filter by suhu
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender();
     });
-  
+
     document.querySelector("#konsumsi-listrik-btn").addEventListener("click", function () {
         currentDataType = 'konsumsiListrik'; // Filter by konsumsi listrik
         resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
         fetchDataAndRender();
     });
-  
+
     // Reset chart navigation when changing filter
     function resetChartNavigation() {
         currentChartIndex = 0; // Start from the first page
@@ -93,61 +84,71 @@ document.addEventListener("DOMContentLoaded", function () {
         prevBtn.style.display = "none"; // Hide prev button
         nextBtn.style.display = "none"; // Hide next button
     }
-  
+
     // Fetch data and render the chart
     function fetchDataAndRender() {
-        fetchAllData()
-            .then(({ kelembapanData, suhuData, konsumsiListrikData }) => {
-                let dataToRender = [];
-                if (currentDataType === 'kelembapan') {
-                    dataToRender = kelembapanData;
-                } else if (currentDataType === 'suhu') {
-                    dataToRender = suhuData;
-                } else if (currentDataType === 'konsumsiListrik') {
-                    dataToRender = konsumsiListrikData;
-                } else if (currentDataType === 'All') {
-                    dataToRender = [...kelembapanData, ...suhuData, ...konsumsiListrikData];
-                }
-    
-                if (dataToRender.length === 0) {
-                    chartContainer.innerHTML = "<h2>No data available for the selected type.</h2>";
-                    pageStatus.innerHTML = `(No data to display)`;
-                    return;
-                }
-    
-                renderChart(dataToRender);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error); // Tambahkan logging error
-                chartContainer.innerHTML = "<h2>Error loading data.</h2>";
-                pageStatus.innerHTML = `(Error occurred while fetching data)`;
-            });
-    }
-    
-  
-    // Render the chart
-    function renderChart(data, source) {
-        const groupedData = (Array.isArray(data) ? data : [data]).reduce((acc, item) => {
-            const measurement = source === 'JSON' ? item.measurement : item._measurement;
-            const field = source === 'JSON' ? item.field : item._field;
-            const sensorId = source === 'JSON' ? item.sensorId : item.sensor_id;
-            const label = `${measurement} ${field} ${sensorId}`;
-        
-            if (!acc[measurement]) acc[measurement] = {};
-            if (!acc[measurement][field]) acc[measurement][field] = {};
-            if (!acc[measurement][field][label]) {
-                acc[measurement][field][label] = { labels: [], values: [] };
+        fetchAllData().then(({ kelembapanData, suhuData, konsumsiListrikData }) => {
+            let dataToRender = [];
+            if (currentDataType === 'kelembapan') {
+                dataToRender = kelembapanData;
+            } else if (currentDataType === 'suhu') {
+                dataToRender = suhuData;
+            } else if (currentDataType === 'konsumsiListrik') {
+                dataToRender = konsumsiListrikData;
+            } else if (currentDataType === 'All') {
+                // If 'All' is selected, show all data
+                dataToRender = [...kelembapanData, ...suhuData, ...konsumsiListrikData];
             }
-        
-            const timestamp = source === 'JSON' ? item.timestamp : item._time;
-            const value = source === 'JSON' ? item.value : item._value;
-        
-            acc[measurement][field][label].labels.push(new Date(timestamp).toLocaleString());
-            acc[measurement][field][label].values.push(value);
-        
-            return acc;
+
+            if (dataToRender.length === 0) {
+                chartContainer.innerHTML = "<h2>No data available for the selected type.</h2>";
+                pageStatus.innerHTML = `(No data to display)`;
+                return;
+            }
+
+            renderChart(dataToRender);
+        });
+    }
+
+    // Render the chart
+    function renderChart(data) {
+        // Menggabungkan data lama dan data baru
+        const groupedData = data.reduce((acc, item) => {
+            const measurement = item._measurement;  // Periksa apakah _measurement benar
+            const field = item._field;  // Periksa apakah _field benar
+            const sensorId = item.sensor_id;  // Pastikan sensor_id sudah sesuai
+            const label = `${measurement} ${field} ${sensorId}`;
+    
+            // Cek jika properti _measurement, _field dan sensor_id ada di dalam item
+            
+                if (!acc[measurement]) acc[measurement] = {};
+                if (!acc[measurement][field]) acc[measurement][field] = {};
+                if (!acc[measurement][field][label]) {
+                    acc[measurement][field][label] = { labels: [], values: [] };
+                }
+    
+                acc[measurement][field][label].labels.push(new Date(item._time).toLocaleString());  // Menggunakan _time dari InfluxDB
+                acc[measurement][field][label].values.push(item._value);  // Menggunakan _value dari InfluxDB
+                return acc;
+
         }, {});
-        
+    
+        // Menambahkan data baru ke dalam groupedData
+        newData.forEach((item) => {
+            const measurement = item.measurement;  // Menggunakan measurement dari data
+            const field = item.field;  // Menggunakan field dari data
+            const sensorId = item.sensorId;  // Menggunakan sensorId dari data
+            const label = `${measurement} ${field} ${sensorId}`;
+    
+            if (!groupedData[measurement]) groupedData[measurement] = {};
+            if (!groupedData[measurement][field]) groupedData[measurement][field] = {};
+            if (!groupedData[measurement][field][label]) {
+                groupedData[measurement][field][label] = { labels: [], values: [] };
+            }
+    
+            groupedData[measurement][field][label].labels.push(new Date(item.timestamp).toLocaleString());
+            groupedData[measurement][field][label].values.push(item.value);  // Menggunakan value dari data
+        });
     
         // Random color generator for charts
         function getRandomColor() {
@@ -161,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Object.keys(groupedData).forEach((measurement) => {
             Object.keys(groupedData[measurement]).forEach((field) => {
                 const canvas = document.createElement("canvas");
-                canvas.id = "chart";
+                canvas.id = `chart-${measurement}-${field}`;  // Membuat ID unik untuk setiap chart
                 chartContainer.appendChild(canvas);
     
                 const chartCtx = canvas.getContext('2d');
@@ -176,7 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     borderWidth: 1
                 }));
     
-                const labels = groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels;
+                const labels = currentChartType === 'pie'
+                    ? Object.keys(groupedData[measurement][field])  // Untuk pie chart, gunakan keys sebagai label
+                    : groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels;
     
                 const chart = new Chart(chartCtx, {
                     type: currentChartType,
@@ -206,7 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         } : {}
                     }
                 });
-                
     
                 // Save chart for navigation
                 charts.push(chart);
@@ -224,15 +226,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
 
-    
-  
     // Display the chart based on index
     function displayChartAtIndex(index) {
         charts.forEach((chart, i) => {
             chart.canvas.style.display = (i === index) ? 'block' : 'none';
         });
     }
-  
+
     // Navigation buttons
     nextBtn.addEventListener("click", function () {
         if (currentChartIndex < charts.length - 1) {
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-  
+
     prevBtn.addEventListener("click", function () {
         if (currentChartIndex > 0) {
             currentChartIndex--;
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-  
+
     // Arrow key navigation
     document.addEventListener("keydown", function (e) {
         if (e.key === "ArrowLeft") {
@@ -266,8 +266,11 @@ document.addEventListener("DOMContentLoaded", function () {
             nextBtn.click(); // Simulate the "Next" button click
         }
     });
-  
+
     // Initial data fetch and chart render
     fetchDataAndRender();
-  });
-  
+});
+
+
+
+           
