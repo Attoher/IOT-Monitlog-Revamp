@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true
+    "target": "ES6",                      // Target output JavaScript
+    "module": "commonjs",                 // Modul sistem yang digunakan (Node.js)
+    "rootDir": "./",                      // Direktori root project Anda
+    "outDir": "./dist",                   // Direktori hasil build TypeScript
+    "strict": true,                       // Aktifkan strict mode
+    "esModuleInterop": true,              // Mendukung import/export ES6
+    "skipLibCheck": true,                 // Lewati pemeriksaan pada file library
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"]
+  "include": ["./**/*.ts"],               // Sertakan semua file TypeScript di project
+  "exclude": ["node_modules"]             // Abaikan folder node_modules
 }
