@@ -1,250 +1,195 @@
+import express, { Request, Response } from 'express';
+import { InfluxDB, Point , QueryApi } from '@influxdata/influxdb-client';
+import dotenv from 'dotenv';
+import path from 'path';
+import sequelize from './models/index'; // Koneksi ke database dengan sequelize
+import appLogin from './app'; // Import appLogin dari file lain
+import router from './routes/userRoutes';
+
+dotenv.config();
+
+const app = express();
+const port = 3000;
+
+// Konfigurasi InfluxDB
+const influxDBUrl = 'http://localhost:8086';
+const token = 'aflLC2CIRvmQWgF4gGEga-7O3fGEPtEDuTwcYtQtqc_rd1wK-FM9uxH6o_mrRx-lTfs7JuMhzQJxDY1G74rB5A==';
+const org = '379932e683da78f5';
+const suhuBucket = 'dataIotSuhu';
+const kelembapanBucket = 'dataIOTKelembapan';
+const listrikBucket = 'dataIOTListrik';
 
 
-document.addEventListener("DOMContentLoaded", function () {
-  const chartContainer = document.querySelector("#chartContainer");
-  const pageStatus = document.querySelector("#pageStatus");
-  const prevBtn = document.querySelector("#prev-chart-btn");
-  const nextBtn = document.querySelector("#next-chart-btn");
-  let currentChartType = 'bar'; // Default chart type
-  let currentDataType = ''; // Default data type is 'All' (no filter applied)
-  let currentChartIndex = 0; // Index for the active chart
-  let charts = []; // Array to store rendered charts
+const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
-  // Hide the Prev and Next buttons by default
-  prevBtn.style.display = "none";
-  nextBtn.style.display = "none";
 
-  // Fetch data for all measurements
-  async function fetchAllData() {
-      try {
-          const kelembapanResponse = await fetch('/data/kelembapan');
-          const suhuResponse = await fetch('/data/suhu');
-          const konsumsiListrikResponse = await fetch('/data/konsumsiListrik');
+app.use(express.static(path.join(__dirname, 'public')));
 
-          const kelembapanData = await kelembapanResponse.json();
-          const suhuData = await suhuResponse.json();
-          const konsumsiListrikData = await konsumsiListrikResponse.json();
+// Middleware untuk body parsing JSON
+app.use(express.json());
 
-          return { kelembapanData, suhuData, konsumsiListrikData };
-      } catch (error) {
-          console.error('Error fetching all data:', error);
-          return { kelembapanData: [], suhuData: [], konsumsiListrikData: [] };  // Return empty arrays on error
-      }
+// Middleware untuk API dengan prefix '/api'
+app.use('/api', router);
+
+
+// Gabungkan rute dari appLogin
+app.use(appLogin);
+
+
+// Helper function: Query data dari InfluxDB
+const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
+  const queryApi: QueryApi = influxDB.getQueryApi(org);
+  const query = `from(bucket: "${bucket}") |> range(start: 0)`; // Sesuaikan range waktu
+  const results: Record<string, unknown>[] = [];
+
+  return new Promise((resolve, reject) => {
+    queryApi.queryRows(query, {
+      next(row, tableMeta) {
+        results.push(tableMeta.toObject(row));
+      },
+      error(error) {
+        console.error(`Error querying ${bucket}:`, error);
+        reject(error);
+      },
+      complete() {
+        resolve(results);
+      },
+    });
+  });
+};
+
+// Endpoint untuk data suhu
+app.get('/data/suhu', async (req: Request, res: Response) => {
+  try {
+    const data = await queryData(suhuBucket);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error fetching data for suhu.');
   }
-
-  // Event listener for chart type buttons
-  document.querySelector("#line-chart-btn").addEventListener("click", function () {
-      currentChartType = 'line';
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender(); // Fetch and render chart with updated type and data
-  });
-
-  document.querySelector("#bar-chart-btn").addEventListener("click", function () {
-      currentChartType = 'bar';
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender(); // Fetch and render chart with updated type and data
-  });
-
-  document.querySelector("#pie-chart-btn").addEventListener("click", function () {
-      currentChartType = 'pie';
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender(); // Fetch and render chart with updated type and data
-  });
-
-  // Event listeners for data filters (All, Kelembapan, Suhu, Konsumsi Listrik)
-  document.querySelector("#all-btn").addEventListener("click", function () {
-      currentDataType = 'All'; // Set data type to 'All'
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender();
-  });
-
-  document.querySelector("#kelembapan-btn").addEventListener("click", function () {
-      currentDataType = 'kelembapan'; // Filter by kelembapan
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender();
-  });
-
-  document.querySelector("#suhu-btn").addEventListener("click", function () {
-      currentDataType = 'suhu'; // Filter by suhu
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender();
-  });
-
-  document.querySelector("#konsumsi-listrik-btn").addEventListener("click", function () {
-      currentDataType = 'konsumsiListrik'; // Filter by konsumsi listrik
-      resetChartNavigation();  // Reset navigation (clear charts and reset pagination)
-      fetchDataAndRender();
-  });
-
-  // Reset chart navigation when changing filter
-  function resetChartNavigation() {
-      currentChartIndex = 0; // Start from the first page
-      charts = []; // Clear previous charts
-      chartContainer.innerHTML = ''; // Clear the chart container
-      prevBtn.style.display = "none"; // Hide prev button
-      nextBtn.style.display = "none"; // Hide next button
-  }
-
-  // Fetch data and render the chart
-  function fetchDataAndRender() {
-      fetchAllData().then(({ kelembapanData, suhuData, konsumsiListrikData }) => {
-          let dataToRender = [];
-          if (currentDataType === 'kelembapan') {
-              dataToRender = kelembapanData;
-          } else if (currentDataType === 'suhu') {
-              dataToRender = suhuData;
-          } else if (currentDataType === 'konsumsiListrik') {
-              dataToRender = konsumsiListrikData;
-          } else if (currentDataType === 'All') {
-              // If 'All' is selected, show all data
-              dataToRender = [...kelembapanData, ...suhuData, ...konsumsiListrikData];
-          }
-
-          if (dataToRender.length === 0) {
-              chartContainer.innerHTML = "<h2>No data available for the selected type.</h2>";
-              pageStatus.innerHTML = `(No data to display)`;
-              return;
-          }
-
-          renderChart(dataToRender);
-      });
-  }
-
-  // Render the chart
-    function renderChart(data) {
-        const groupedData = data.reduce((acc, item) => {
-            const measurementJ = item.measurement;  // Menggunakan measurement dari data
-            const fieldJ = item.field;  // Menggunakan field dari data
-            const sensorIdJ = item.sensorId;  // Menggunakan sensorId dari data
-            const labelJ = `${measurementJ} ${fieldJ} ${sensorIdJ}`;
-
-            if (!acc[measurementJ]) acc[measurementJ] = {};
-            if (!acc[measurementJ][fieldJ]) acc[measurementJ][fieldJ] = {};
-            if (!acc[measurementJ][fieldJ][labelJ]) {
-                acc[measurementJ][fieldJ][labelJ] = { labels: [], values: [] };
-            }
-
-            acc[measurementJ][fieldJ][labelJ].labels.push(new Date(item.timestamp).toLocaleString());
-            acc[measurementJ][fieldJ][labelJ].values.push(item.value);  // Menggunakan value dari data
-            return acc;
-        }, {});
-
-        // Random color generator for charts
-        function getRandomColor() {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            return `rgba(${r}, ${g}, ${b}, 1)`;
-        }
-
-        // Render the charts
-        Object.keys(groupedData).forEach((measurement) => {
-            Object.keys(groupedData[measurement]).forEach((field) => {
-                const canvas = document.createElement("canvas");
-                canvas.id = "chart";
-                chartContainer.appendChild(canvas);
-
-                const chartCtx = canvas.getContext('2d');
-
-                const datasets = Object.keys(groupedData[measurement][field]).map((label) => ({
-                    label: label,
-                    data: groupedData[measurement][field][label].values,
-                    borderColor: getRandomColor(),
-                    backgroundColor: currentChartType === 'pie' 
-                        ? getRandomColor()
-                        : getRandomColor(),
-                    borderWidth: 1
-                }));
-
-                const labels = currentChartType === 'pie'
-                    ? groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels
-                    : groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels;
-
-                const chart = new Chart(chartCtx, {
-                    type: currentChartType,
-                    data: {
-                        labels: labels,
-                        datasets: datasets
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: `Measurement: ${measurement}, Field: ${field}`,
-                                font: {
-                                    size: 18,
-                                    weight: 'bold'
-                                }
-                            },
-                            legend: {
-                                position: 'top',
-                            }
-                        },
-                        scales: currentChartType !== 'pie' ? {
-                            y: {
-                                beginAtZero: true
-                            }
-                        } : {}
-                    }
-                });
-
-                // Save chart for navigation
-                charts.push(chart);
-            });
-        });
-
-        // Show the first chart and navigation buttons if needed
-        if (charts.length > 0) {
-            displayChartAtIndex(0);
-            pageStatus.innerHTML = `Page: 1 of ${charts.length}`;
-            if (charts.length > 1) {
-                nextBtn.style.display = "inline-block"; // Show Next button if there is more than one chart
-            }
-        }
-    }
-
-  // Display the chart based on index
-  function displayChartAtIndex(index) {
-      charts.forEach((chart, i) => {
-          chart.canvas.style.display = (i === index) ? 'block' : 'none';
-      });
-  }
-
-  // Navigation buttons
-  nextBtn.addEventListener("click", function () {
-      if (currentChartIndex < charts.length - 1) {
-          currentChartIndex++;
-          displayChartAtIndex(currentChartIndex);
-          pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
-          prevBtn.style.display = "inline-block"; // Show prev button when possible
-          if (currentChartIndex === charts.length - 1) {
-              nextBtn.style.display = "none"; // Hide next button on the last chart
-          }
-      }
-  });
-
-  prevBtn.addEventListener("click", function () {
-      if (currentChartIndex > 0) {
-          currentChartIndex--;
-          displayChartAtIndex(currentChartIndex);
-          pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
-          nextBtn.style.display = "inline-block"; // Show next button when possible
-          if (currentChartIndex === 0) {
-              prevBtn.style.display = "none"; // Hide prev button on the first chart
-          }
-      }
-  });
-
-  // Arrow key navigation
-  document.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") {
-          prevBtn.click(); // Simulate the "Previous" button click
-      } else if (e.key === "ArrowRight") {
-          nextBtn.click(); // Simulate the "Next" button click
-      }
-  });
-
-  // Initial data fetch and chart render
-  fetchDataAndRender();
 });
+
+// Endpoint untuk data kelembapan
+app.get('/data/kelembapan', async (req: Request, res: Response) => {
+  try {
+    const data = await queryData(kelembapanBucket);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error fetching data for kelembapan.');
+  }
+});
+
+// Endpoint untuk data konsumsi listrik
+app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
+  try {
+    const data = await queryData(listrikBucket);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error fetching data for konsumsi listrik.');
+  }
+});
+
+// Rute utama untuk aplikasi login
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/data', async (req: Request, res: Response) => {
+  const { bucket, data } = req.body;
+
+  // Validasi input
+  if (!bucket || !data || typeof data !== 'object') {
+    return res.status(400).json({ error: 'Invalid input. Ensure bucket and data are provided.' });
+  }
+
+  try {
+    // Buat instance WriteApi untuk menulis data ke InfluxDB
+    const writeApi = influxDB.getWriteApi(org, bucket);
+    writeApi.useDefaultTags({ source: 'postman' }); // Tambahkan tag default
+
+    // Buat Point dari data yang dikirim
+    const point = new Point('measurement')
+      .tag('source', 'postman') // Tambahkan tag (opsional)
+      .floatField('value', data.value) // Field utama
+      .timestamp(new Date());
+
+    // Tulis data ke InfluxDB
+    writeApi.writePoint(point);
+    await writeApi.close();
+
+    res.status(201).json({ message: 'Data written to InfluxDB successfully.' });
+  } catch (error) {
+    console.error('Error writing data to InfluxDB:', error);
+    res.status(500).json({ error: 'Failed to write data to InfluxDB.' });
+  }
+});
+
+app.get('/data/timestamp', async (req: Request, res: Response) => {
+  const { time } = req.query;
+
+  if (!time) {
+    return res.status(400).json({ error: 'Timestamp (time) parameter is required.' });
+  }
+
+  try {
+    const queryDataByTimestamp = async (bucket: string, time: string) => {
+      const queryApi: QueryApi = influxDB.getQueryApi(org);
+      const query = `
+         from(bucket: "${bucket}")
+         |> range(start: ${time}, stop: ${time})
+         |> filter(fn: (r) => r._field == "value")
+         |> last()
+      `;
+
+      const results: Record<string, unknown>[] = [];
+      return new Promise((resolve, reject) => {
+        queryApi.queryRows(query, {
+          next(row, tableMeta) {
+            results.push(tableMeta.toObject(row));
+          },
+          error(error) {
+            reject(error);
+          },
+          complete() {
+            resolve(results);
+          },
+        });
+      });
+    };
+
+    const [suhuData, kelembapanData, listrikData] = await Promise.all([
+      queryDataByTimestamp(suhuBucket, String(time)),
+      queryDataByTimestamp(kelembapanBucket, String(time)),
+      queryDataByTimestamp(listrikBucket, String(time)),
+    ]);
+
+    res.json({
+      suhu: suhuData,
+      kelembapan: kelembapanData,
+      listrik: listrikData,
+    });
+  } catch (error) {
+    console.error('Error fetching data by timestamp:', error);
+    res.status(500).send('Error fetching data by timestamp.');
+  }
+});
+
+
+// Start server untuk aplikasi IoT dan login pada port 3000
+const startServer = async () => {
+  try {
+    // Authenticate database login (PostgreSQL)
+    await sequelize.authenticate();
+    console.log('Database connected!');
+    await sequelize.sync();
+
+    // Start aplikasi IoT dan login di port 3000
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+};
+
+// Mulai server
+startServer();

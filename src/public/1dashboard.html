@@ -85,37 +85,41 @@
         </aside>
         <section class="middle">
             <div class="dashboard">
-                <div class="header">
-                  <div class="header-item">Suhu</div>
-                  <div class="header-item">Kelembapan</div>
-                  <div class="header-item">Konsumsi Listrik</div>
+              <div class="header">
+                <div class="header-item">Suhu</div>
+                <div class="header-item">Kelembapan</div>
+                <div class="header-item">Konsumsi Listrik</div>
+              </div>
+              <div class="content">
+                <!-- Card Suhu -->
+                <div class="card">
+                  <div class="info">
+                    <h2 id="temp-value">40 C</h2>
+                    <h2>AC</h2>
+                    <img src="images/Temp.png" alt="Thermometer" class="icon">
+                  </div>
+                  <p class="status panas">Panas <span class="indicator red"></span></p>
                 </div>
-                <div class="content">
-                  <div class="card">
-                    <div class="info">
-                      <h2>40 C</h2>
-                      <h2>AC</h2>
-                      <img src="images/Temp.png" alt="Thermometer" class="icon">
-                    </div>
-                    <p class="status panas">Panas <span class="indicator red"></span></h2>
+                <!-- Card Kelembapan -->
+                <div class="card">
+                  <div class="info">
+                    <h2 id="humidity-value">50%</h2>
                   </div>
-                  <div class="card">
-                    <div class="info">
-                      <h2>50%</h2>
-                    </div>
-                    <p class="status aman">Aman <span class="indicator green"></span></h2>
-                  </div>
-                  <div class="card">
-                    <div class="info">
-                      <h2>200 V</h2>
-                    </div>
+                  <p class="status aman">Aman <span class="indicator green"></span></p>
+                </div>
+                <!-- Card Konsumsi Listrik -->
+                <div class="card">
+                  <div class="info">
+                    <h2 id="power-value">200 V</h2>
                   </div>
                 </div>
+              </div>
             </div>
-        </section>
+          </section>          
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./JS/main.js"></script>
     <script src="./JS/search.js"></script>
+    <script src="./JS/dashboard.js"></script>
 </body>
 </html>

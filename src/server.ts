@@ -5,6 +5,7 @@ import path from 'path';
 import sequelize from './models/index'; // Koneksi ke database dengan sequelize
 import appLogin from './app'; // Import appLogin dari file lain
 import router from './routes/userRoutes';
+
 dotenv.config();
 
 const app = express();
@@ -17,7 +18,6 @@ const org = '379932e683da78f5';
 const suhuBucket = 'dataIotSuhu';
 const kelembapanBucket = 'dataIOTKelembapan';
 const listrikBucket = 'dataIOTListrik';
-
 
 
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
@@ -120,6 +120,56 @@ app.post('/data', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error writing data to InfluxDB:', error);
     res.status(500).json({ error: 'Failed to write data to InfluxDB.' });
+  }
+});
+
+app.get('/data/timestamp', async (req: Request, res: Response) => {
+  const { time } = req.query;
+
+  if (!time) {
+    return res.status(400).json({ error: 'Timestamp (time) parameter is required.' });
+  }
+
+  try {
+    const queryDataByTimestamp = async (bucket: string, time: string) => {
+      const queryApi: QueryApi = influxDB.getQueryApi(org);
+      const query = `
+         from(bucket: "${bucket}")
+         |> range(start: ${time}, stop: ${time})
+         |> filter(fn: (r) => r._field == "value")
+         |> last()
+      `;
+
+      const results: Record<string, unknown>[] = [];
+      return new Promise((resolve, reject) => {
+        queryApi.queryRows(query, {
+          next(row, tableMeta) {
+            results.push(tableMeta.toObject(row));
+          },
+          error(error) {
+            reject(error);
+          },
+          complete() {
+            resolve(results);
+          },
+        });
+      });
+    };
+
+    const [suhuData, kelembapanData, listrikData] = await Promise.all([
+      queryDataByTimestamp(suhuBucket, String(time)),
+      queryDataByTimestamp(kelembapanBucket, String(time)),
+      queryDataByTimestamp(listrikBucket, String(time)),
+    ]);
+
+    res.json({
+      suhu: suhuData,
+      kelembapan: kelembapanData,
+      listrik: listrikData,
+    });
+  } catch (error) {
+    console.error('Error fetching data by timestamp:', error);
+    res.status(500).send('Error fetching data by timestamp.');
   }
 });
 
