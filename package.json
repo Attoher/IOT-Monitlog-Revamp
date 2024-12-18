@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && cp -r public dist/"
+    "build": "tsc && cp -r public dist/",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev src/server.ts",
+    "dev": "ts-node-dev src/server.ts"
   },
   "keywords": [],
   "author": "",
