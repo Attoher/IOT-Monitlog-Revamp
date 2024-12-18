@@ -2,10 +2,11 @@
   "name": "todolist-express",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "public/server.js",
   "scripts": {
-    "start": "node dist/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node public/server.js",
+    "dev": "ts-node-dev src/server.ts"
   },
   "dependencies": {
     "express": "^4.21.1",
