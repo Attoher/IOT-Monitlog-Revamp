@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && cp -r public dist/",
-    "start": "node dist/server.js",
+    "build": "tsc/",
+    "start": "node dist/server.ts",
     "dev": "ts-node-dev src/server.ts"
   },
   "keywords": [],
