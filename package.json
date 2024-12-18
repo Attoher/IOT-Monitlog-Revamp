@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev src/server.ts"
+    "start": "node dist/server.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "express": "^4.21.1",
