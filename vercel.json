@@ -1,16 +1,17 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "public/server.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "public/server.js"
-      }
-    ]
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/server.js",  // Ubah dari public/server.js menjadi dist/server.js
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js"  // Ubah dari public/server.js menjadi dist/server.js
+    }
+  ]
+}
+
   
