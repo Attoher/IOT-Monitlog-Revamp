@@ -90,7 +90,7 @@ app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
 
 // Rute utama untuk aplikasi login
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, './index.html'));
 });
 
 app.post('/data', async (req: Request, res: Response) => {
