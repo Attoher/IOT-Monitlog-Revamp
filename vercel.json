@@ -8,17 +8,18 @@
         "typescript": {
           "tsconfigPath": "tsconfig.json"
         },
-        "includeFiles": ["node_modules/**"]
+        "includeFiles": ["src/public/**"]
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/server.js" 
+      "dest": "src/public/$1" 
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "dist/server.js"
     }
   ]
 }
-
-
-  
