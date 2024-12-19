@@ -23,7 +23,7 @@ const listrikBucket = 'dataIOTListrik';
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
 
-app.use(express.static(path.join(__dirname, './')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware untuk body parsing JSON
 app.use(express.json());
@@ -58,10 +58,6 @@ const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => 
   });
 };
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
 // Endpoint untuk data suhu
 app.get('/data/suhu', async (req: Request, res: Response) => {
   try {
@@ -94,7 +90,7 @@ app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
 
 // Rute utama untuk aplikasi login
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.post('/data', async (req: Request, res: Response) => {
@@ -197,3 +193,4 @@ const startServer = async () => {
 
 // Mulai server
 startServer();
+
