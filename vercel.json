@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "public": "src/public",
   "builds": [
     {
       "src": "src/server.ts",
@@ -7,19 +8,19 @@
       "config": {
         "typescript": {
           "tsconfigPath": "tsconfig.json"
-        },
-        "includeFiles": ["node_modules/**"]
+        }
       }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "dist/server.js"
-    },
-    {
       "src": "/(.*)",
-      "dest": "src/public/$1"
+      "dest": "src/server.ts"
     }
+  ],
+  "includeFiles": [
+    "node_modules/**",
+    "package.json",
+    "package-lock.json"
   ]
 }
