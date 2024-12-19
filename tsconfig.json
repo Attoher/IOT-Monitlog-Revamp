@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src/**/*"]
+    "lib": ["ES6", "DOM"],
+    "types": ["node"]
+  }
 }
 
