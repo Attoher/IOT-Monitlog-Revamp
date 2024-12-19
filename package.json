@@ -2,11 +2,10 @@
   "name": "todolist-express",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev src/server.ts"
+    "start": "ts-node-dev src/server.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@influxdata/influxdb-client": "^1.35.0",
