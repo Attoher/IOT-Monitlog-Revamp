@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "public": "src/public",
   "builds": [
     {
       "src": "src/server.ts",
@@ -8,18 +9,18 @@
         "typescript": {
           "tsconfigPath": "tsconfig.json"
         },
-        "includeFiles": ["src/public/**"]
+        "includeFiles": ["node_modules/**"]
       }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "src/public/$1" 
-    },
-    {
       "src": "/api/(.*)",
       "dest": "dist/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/public/$1"
     }
   ]
 }
