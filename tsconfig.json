@@ -5,11 +5,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ES6", "DOM"],
-    "types": ["node"]
+    "esModuleInterop": true
   }
 }
 
