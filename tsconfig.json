@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES6", "DOM"],
-    "types": ["node"]
+    "types": ["node"],
   }
 }
 
