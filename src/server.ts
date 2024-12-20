@@ -22,7 +22,7 @@ const listrikBucket = 'dataIOTListrik';
 
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
-const publicPath = path.resolve(process.cwd(), 'public');
+const publicPath = path.resolve(process.cwd(), './src/public');
 
 app.use(express.json());
 app.use(express.static(publicPath));
@@ -40,7 +40,7 @@ app.get('/', (req: Request, res: Response) => {
 // Helper function: Query data dari InfluxDB
 const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
   const queryApi: QueryApi = influxDB.getQueryApi(org);
-  const query = 'from(bucket: "${bucket}") |> range(start: 0);' // Sesuaikan range waktu
+  const query = `from(bucket: "${bucket}") |> range(start: 0)`; // Sesuaikan range waktu
   const results: Record<string, unknown>[] = [];
 
   return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => 
         results.push(tableMeta.toObject(row));
       },
       error(error) {
-        console.error('Error querying ${bucket}:', error);
+        console.error(`Error querying ${bucket}:`, error);
         reject(error);
       },
       complete() {
