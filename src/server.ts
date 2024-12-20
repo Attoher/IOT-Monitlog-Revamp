@@ -12,9 +12,9 @@ const app = express();
 const port = 3000;
 
 // Konfigurasi InfluxDB
-const influxDBUrl = 'http://localhost:8086';
-const token = 'aflLC2CIRvmQWgF4gGEga-7O3fGEPtEDuTwcYtQtqc_rd1wK-FM9uxH6o_mrRx-lTfs7JuMhzQJxDY1G74rB5A==';
-const org = '379932e683da78f5';
+const influxDBUrl = 'https://us-east-1-1.aws.cloud2.influxdata.com';
+const token = 'KPj5Z_r867KuiQ1PkOBA_mptYKunKIdLoqIVQU_A7vTFypou6VZMm9jI2YW6zy6ow8gWGS7elc3w0bsqJ5F2Rg==';
+const org = '7da30775cb9d6cea';
 const suhuBucket = 'dataIotSuhu';
 const kelembapanBucket = 'dataIOTKelembapan';
 const listrikBucket = 'dataIOTListrik';
@@ -22,24 +22,25 @@ const listrikBucket = 'dataIOTListrik';
 
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
+const publicPath = path.resolve(process.cwd(), 'public');
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware untuk body parsing JSON
 app.use(express.json());
+app.use(express.static(publicPath));
 
 // Middleware untuk API dengan prefix '/api'
 app.use('/api', router);
 
-
 // Gabungkan rute dari appLogin
 app.use(appLogin);
 
+app.get('/', (req: Request, res: Response) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
 
 // Helper function: Query data dari InfluxDB
 const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
   const queryApi: QueryApi = influxDB.getQueryApi(org);
-  const query = `from(bucket: "${bucket}") |> range(start: 0)`; // Sesuaikan range waktu
+  const query = 'from(bucket: "${bucket}") |> range(start: 0);' // Sesuaikan range waktu
   const results: Record<string, unknown>[] = [];
 
   return new Promise((resolve, reject) => {
@@ -48,7 +49,7 @@ const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => 
         results.push(tableMeta.toObject(row));
       },
       error(error) {
-        console.error(`Error querying ${bucket}:`, error);
+        console.error('Error querying ${bucket}:', error);
         reject(error);
       },
       complete() {
@@ -88,41 +89,7 @@ app.get('/data/konsumsiListrik', async (req: Request, res: Response) => {
   }
 });
 
-// Rute utama untuk aplikasi login
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './index.html'));
-});
-
-app.post('/data', async (req: Request, res: Response) => {
-  const { bucket, data } = req.body;
-
-  // Validasi input
-  if (!bucket || !data || typeof data !== 'object') {
-    return res.status(400).json({ error: 'Invalid input. Ensure bucket and data are provided.' });
-  }
-
-  try {
-    // Buat instance WriteApi untuk menulis data ke InfluxDB
-    const writeApi = influxDB.getWriteApi(org, bucket);
-    writeApi.useDefaultTags({ source: 'postman' }); // Tambahkan tag default
-
-    // Buat Point dari data yang dikirim
-    const point = new Point('measurement')
-      .tag('source', 'postman') // Tambahkan tag (opsional)
-      .floatField('value', data.value) // Field utama
-      .timestamp(new Date());
-
-    // Tulis data ke InfluxDB
-    writeApi.writePoint(point);
-    await writeApi.close();
-
-    res.status(201).json({ message: 'Data written to InfluxDB successfully.' });
-  } catch (error) {
-    console.error('Error writing data to InfluxDB:', error);
-    res.status(500).json({ error: 'Failed to write data to InfluxDB.' });
-  }
-});
-
+// Rute untuk data berdasarkan timestamp
 app.get('/data/timestamp', async (req: Request, res: Response) => {
   const { time } = req.query;
 
@@ -173,24 +140,5 @@ app.get('/data/timestamp', async (req: Request, res: Response) => {
   }
 });
 
-
-// Start server untuk aplikasi IoT dan login pada port 3000
-const startServer = async () => {
-  try {
-    // Authenticate database login (PostgreSQL)
-    await sequelize.authenticate();
-    console.log('Database connected!');
-    await sequelize.sync();
-
-    // Start aplikasi IoT dan login di port 3000
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-};
-
-// Mulai server
-startServer();
-
+// Eksport aplikasi untuk Vercel
+export default app;
