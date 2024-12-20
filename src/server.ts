@@ -3,6 +3,8 @@ import { InfluxDB, Point , QueryApi } from '@influxdata/influxdb-client';
 import dotenv from 'dotenv';
 import path from 'path';
 import sequelize from './models/index'; // Koneksi ke database dengan sequelize
+import appLogin from './app'; // Import appLogin dari file lain
+import router from './routes/userRoutes';
 
 dotenv.config();
 
@@ -10,13 +12,16 @@ const app = express();
 const port = 3000;
 
 // Konfigurasi InfluxDB
-const influxDBUrl = 'https://us-east-1-1.aws.cloud2.influxdata.com';
-const token = 'KPj5Z_r867KuiQ1PkOBA_mptYKunKIdLoqIVQU_A7vTFypou6VZMm9jI2YW6zy6ow8gWGS7elc3w0bsqJ5F2Rg==';
-const org = '7da30775cb9d6cea';
-const suhuBucket = 'dataIotSuhu';
-const kelembapanBucket = 'dataIOTKelembapan';
-const listrikBucket = 'dataIOTListrik';
+const influxDBUrl = process.env.INFLUXDB_URL || 'https://us-east-1-1.aws.cloud2.influxdata.com';
+const token = process.env.INFLUXDB_TOKEN;
+const org = process.env.INFLUXDB_ORG || '7da30775cb9d6cea';
+const suhuBucket = process.env.INFLUXDB_SUHU_BUCKET || 'dataIotSuhu';
+const kelembapanBucket = process.env.INFLUXDB_KELEMBAPAN_BUCKET || 'dataIOTKelembapan';
+const listrikBucket = process.env.INFLUXDB_LISTRIK_BUCKET || 'dataIOTListrik';
 
+if (!token) {
+  throw new Error('InfluxDB token is not defined');
+}
 
 const influxDB = new InfluxDB({ url: influxDBUrl, token });
 
@@ -25,6 +30,12 @@ const publicPath = path.resolve(process.cwd(), './src/public');
 app.use(express.json());
 app.use(express.static(publicPath));
 
+// Middleware untuk API dengan prefix '/api'
+app.use('/api', router);
+
+// Gabungkan rute dari appLogin
+app.use(appLogin);
+
 app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
@@ -32,7 +43,7 @@ app.get('/', (req: Request, res: Response) => {
 // Helper function: Query data dari InfluxDB
 const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => {
   const queryApi: QueryApi = influxDB.getQueryApi(org);
-  const query = `from(bucket: "${bucket}") |> range(start: 0)`; // Sesuaikan range waktu
+  const query = `from(bucket: "${bucket}") |> range(start: -1h)`; // Adjusted range time to last 1 hour
   const results: Record<string, unknown>[] = [];
 
   return new Promise((resolve, reject) => {
@@ -42,7 +53,7 @@ const queryData = async (bucket: string): Promise<Record<string, unknown>[]> => 
       },
       error(error) {
         console.error(`Error querying ${bucket}:`, error);
-        reject(error);
+        reject(new Error(`Error querying ${bucket}: ${error.message}`));
       },
       complete() {
         resolve(results);
@@ -106,7 +117,7 @@ app.get('/data/timestamp', async (req: Request, res: Response) => {
             results.push(tableMeta.toObject(row));
           },
           error(error) {
-            reject(error);
+            reject(new Error(`Error querying ${bucket} by timestamp: ${error.message}`));
           },
           complete() {
             resolve(results);
