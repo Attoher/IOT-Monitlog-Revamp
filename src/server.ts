@@ -25,12 +25,6 @@ const publicPath = path.resolve(process.cwd(), './src/public');
 app.use(express.json());
 app.use(express.static(publicPath));
 
-// Middleware untuk API dengan prefix '/api'
-app.use('/api', router);
-
-// Gabungkan rute dari appLogin
-app.use(appLogin);
-
 app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
