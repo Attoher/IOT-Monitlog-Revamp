@@ -3,8 +3,6 @@ import { InfluxDB, Point , QueryApi } from '@influxdata/influxdb-client';
 import dotenv from 'dotenv';
 import path from 'path';
 import sequelize from './models/index'; // Koneksi ke database dengan sequelize
-import appLogin from './app'; // Import appLogin dari file lain
-import router from './routes/userRoutes';
 
 dotenv.config();
 
