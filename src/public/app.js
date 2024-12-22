@@ -1,6 +1,6 @@
 const API_BASE_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:4000/auth'
-  : 'https://iot-monitlog-39.vercel.app/auth'; // Base URL backend untuk user
+  : 'https://iot-monitlog-revamp.vercel.app/auth'; // Base URL backend untuk user
 
 // Elemen DOM
 const loginSection = document.getElementById('login-section');
