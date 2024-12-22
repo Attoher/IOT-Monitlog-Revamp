@@ -1,13 +1,11 @@
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const chartContainer = document.querySelector("#chartContainer");
     const pageStatus = document.querySelector("#pageStatus");
     const prevBtn = document.querySelector("#prev-chart-btn");
     const nextBtn = document.querySelector("#next-chart-btn");
-    let currentChartType = 'bar'; // Default chart type
-    let currentDataType = ''; // Default data type is 'All' (no filter applied)
-    let currentChartIndex = 0; // Index for the active chart
+    let currentChartType = 'bar';
+    let currentDataType = '';
+    let currentChartIndex = 0;
     let charts = []; // Array to store rendered charts
   
     // Hide the Prev and Next buttons by default
@@ -16,12 +14,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchData(type) {
         try {
-            const response = await fetch(`http://localhost:3000/data/${type}`);
+            // Map the type to the correct endpoint
+            const endpoint = type === 'temperature' ? 'temperature' :
+                            type === 'humidity' ? 'humidity' :
+                            'power';
+                            
+            const response = await fetch(`/api/sensors/${endpoint}/history`);
             if (!response.ok) {
-                console.error(`Failed to fetch ${type} data:`, response.status, response.statusText);
                 throw new Error(`Failed to fetch ${type} data`);
             }
-            return response.json();
+            const data = await response.json();
+            // Add type information to each data point
+            return data.map(item => ({
+                ...item,
+                sensorType: type
+            }));
         } catch (error) {
             console.error(`Error in fetchData(${type}):`, error);
             throw error;
@@ -30,10 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
     
     async function fetchAllData() {
         try {
-            const kelembapanData = await fetchData('kelembapan');
-            const suhuData = await fetchData('suhu');
-            const konsumsiListrikData = await fetchData('konsumsiListrik');
-            return { kelembapanData, suhuData, konsumsiListrikData };
+            const kelembapanData = await fetchData('humidity');
+            const suhuData = await fetchData('temperature');
+            const konsumsiListrikData = await fetchData('power');
+            return { 
+                kelembapanData, 
+                suhuData, 
+                konsumsiListrikData 
+            };
         } catch (error) {
             console.error('Error in fetchAllData:', error);
             throw error;
@@ -126,28 +137,29 @@ document.addEventListener("DOMContentLoaded", function () {
     
   
     // Render the chart
-    function renderChart(data, source) {
+    function renderChart(data) {
         const groupedData = (Array.isArray(data) ? data : [data]).reduce((acc, item) => {
-            const measurement = source === 'JSON' ? item.measurement : item._measurement;
-            const field = source === 'JSON' ? item.field : item._field;
-            const sensorId = source === 'JSON' ? item.sensorId : item.sensor_id;
-            const label = `${measurement} ${field} ${sensorId}`;
-        
-            if (!acc[measurement]) acc[measurement] = {};
-            if (!acc[measurement][field]) acc[measurement][field] = {};
-            if (!acc[measurement][field][label]) {
-                acc[measurement][field][label] = { labels: [], values: [] };
+            const type = item._measurement || 'unknown';
+            const field = item._field || 'value';
+            const sensorId = item.sensor_id || 'value';
+            const label = `${type} ${field} ${sensorId}`;
+    
+            if (!acc[type]) acc[type] = {};
+            if (!acc[type][field]) acc[type][field] = {};
+            if (!acc[type][field][label]) {
+                acc[type][field][label] = { labels: [], values: [] };
             }
-        
-            const timestamp = source === 'JSON' ? item.timestamp : item._time;
-            const value = source === 'JSON' ? item.value : item._value;
-        
-            acc[measurement][field][label].labels.push(new Date(timestamp).toLocaleString());
-            acc[measurement][field][label].values.push(value);
-        
+    
+            const timestamp = new Date(item._time).toLocaleString();
+            const value = parseFloat(item._value || item._value || 0);
+    
+            if (!isNaN(value)) {
+                acc[type][field][label].labels.push(timestamp);
+                acc[type][field][label].values.push(value);
+            }
+    
             return acc;
         }, {});
-        
     
         // Random color generator for charts
         function getRandomColor() {
@@ -157,18 +169,22 @@ document.addEventListener("DOMContentLoaded", function () {
             return `rgba(${r}, ${g}, ${b}, 1)`;
         }
     
+        // Clear chart container before rendering
+        const chartContainer = document.querySelector("#chartContainer");
+        chartContainer.innerHTML = '';
+    
         // Render the charts
-        Object.keys(groupedData).forEach((measurement) => {
-            Object.keys(groupedData[measurement]).forEach((field) => {
+        Object.keys(groupedData).forEach((type) => {
+            Object.keys(groupedData[type]).forEach((field) => {
                 const canvas = document.createElement("canvas");
-                canvas.id = "chart";
+                canvas.id = `chart`;
                 chartContainer.appendChild(canvas);
     
                 const chartCtx = canvas.getContext('2d');
     
-                const datasets = Object.keys(groupedData[measurement][field]).map((label) => ({
+                const datasets = Object.keys(groupedData[type][field]).map((label) => ({
                     label: label,
-                    data: groupedData[measurement][field][label].values,
+                    data: groupedData[type][field][label].values,
                     borderColor: getRandomColor(),
                     backgroundColor: currentChartType === 'pie' 
                         ? getRandomColor()
@@ -176,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     borderWidth: 1
                 }));
     
-                const labels = groupedData[measurement][field][Object.keys(groupedData[measurement][field])[0]].labels;
+                const labels = groupedData[type][field][Object.keys(groupedData[type][field])[0]].labels;
     
                 const chart = new Chart(chartCtx, {
                     type: currentChartType,
@@ -189,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         plugins: {
                             title: {
                                 display: true,
-                                text: `Measurement: ${measurement}, Field: ${field}`,
+                                text: `Measurement: ${type}, Field: ${field}`,
                                 font: {
                                     size: 18,
                                     weight: 'bold'
@@ -206,7 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         } : {}
                     }
                 });
-                
     
                 // Save chart for navigation
                 charts.push(chart);
@@ -220,11 +235,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (charts.length > 1) {
                 nextBtn.style.display = "inline-block"; // Show Next button if there is more than one chart
             }
+        } else {
+            pageStatus.innerHTML = "No data available";
         }
     }
-    
-
-    
   
     // Display the chart based on index
     function displayChartAtIndex(index) {
@@ -269,5 +283,12 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Initial data fetch and chart render
     fetchDataAndRender();
-  });
   
+    // Add this helper function if not already present
+    function getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgba(${r}, ${g}, ${b}, 0.8)`;
+    }
+});

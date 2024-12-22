@@ -1,21 +1,20 @@
-// Add this at the beginning of the file
 document.addEventListener('DOMContentLoaded', () => {
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    const usernameDisplay = document.getElementById('username-display');
-    
-    if (userData && userData.username) {
-        usernameDisplay.textContent = userData.username;
-    } else {
-        // Redirect to login if no user data
-        window.location.href = '0login.html';
-    }
+  // Get user data from localStorage
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const usernameDisplay = document.getElementById('username-display');
+  
+  if (userData && userData.username) {
+      usernameDisplay.textContent = userData.username;
+  } else {
+      // Redirect to login if no user data
+      window.location.href = '0login.html';
+  }
 });
 
 const API_URLS = {
-  suhu: "http://localhost:3000/data/suhu",
-  kelembapan: "http://localhost:3000/data/kelembapan",
-  konsumsiListrik: "http://localhost:3000/data/konsumsiListrik"
+  suhu: "/api/sensors/temperature/latest",
+  kelembapan: "/api/sensors/humidity/latest", 
+  konsumsiListrik: "/api/sensors/power/latest"
 };
 
 
