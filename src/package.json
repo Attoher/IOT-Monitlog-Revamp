@@ -1,5 +1,5 @@
 {
-  "name": "influxdb-express",
+  "name": "express",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@influxdata/influxdb-client": "^1.35.0",
     "bcrypt": "^5.1.1",
     "express": "^4.21.1",
     "sqlite3": "^5.1.7"

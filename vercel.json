@@ -2,12 +2,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/server.ts",
+      "src": "src/server.js",
       "use": "@vercel/node",
       "config": {
-        "typescript": {
-          "tsconfigPath": "tsconfig.json"
-        },
         "includeFiles": ["node_modules/**"]
       }
     }
@@ -15,7 +12,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/server.ts" 
+      "dest": "src/server.js" 
     }
   ]
 }

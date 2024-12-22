@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:3000/users'; // Base URL backend untuk user
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:4000/auth'
+  : 'https://iot-monitlog-39.vercel.app/auth'; // Base URL backend untuk user
 
 // Elemen DOM
 const loginSection = document.getElementById('login-section');
@@ -16,6 +18,39 @@ overlay.classList.add('overlay'); // Add overlay class
 document.body.appendChild(overlay); // Append overlay to the body
 
 let token = null;
+
+// Replace hideBody function with hideSections
+function hideSections() {
+  const leftSection = document.querySelector('.left');
+  const rightSection = document.querySelector('.right');
+  
+  // Remove transition for instant hide
+  leftSection.style.transition = 'none';
+  rightSection.style.transition = 'none';
+  document.body.style.transition = 'none';
+  
+  // Force browser reflow
+  void leftSection.offsetWidth;
+  
+  // Apply changes immediately
+  leftSection.style.opacity = '0';
+  rightSection.style.opacity = '0';
+  document.body.style.backgroundColor = '#000';
+}
+
+function showSections() {
+  const leftSection = document.querySelector('.left');
+  const rightSection = document.querySelector('.right');
+  
+  // Add transition only for showing
+  leftSection.style.transition = 'none';
+  rightSection.style.transition = 'none';
+  document.body.style.transition = 'background-color 0.5s';
+  
+  leftSection.style.opacity = '1';
+  rightSection.style.opacity = '1';
+  document.body.style.backgroundColor = '';
+}
 
 // Navigasi antara Login dan Register
 showRegister.addEventListener('click', () => {
@@ -37,85 +72,52 @@ loginForm.addEventListener('submit', async (e) => {
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ username, password }),
     });
 
+    const data = await response.json();
+
     if (response.ok) {
-      const data = await response.json();
-      token = data.token;
+      // Store user data in localStorage
+      localStorage.setItem('userData', JSON.stringify(data.data));
+      
+      hideSections(); // Hide sections instead of body
 
-      // Show overlay (everything except SweetAlert will turn black)
-      overlay.classList.add('show');
-
-      // SweetAlert popup
+      // Keep existing SweetAlert
       Swal.fire({
         icon: 'success',
         title: 'Login Berhasil!',
         text: 'Redirecting to dashboard...',
         timer: 2000,
         showConfirmButton: true,
-        backdrop: `
-          rgba(0, 0, 0, 1) url('/images/your-image.gif') left top no-repeat
-        `, // Fully opaque black backdrop with optional animated image
+        backdrop: `rgba(0, 0, 0, 1)`,
         customClass: {
-          popup: 'bg-white',  // Solid white background for the SweetAlert
-          title: 'text-black', // Optional: Black title text
-          content: 'text-black', // Optional: Black content text
+          popup: 'bg-white',
+          title: 'text-black',
+          content: 'text-black',
         },
       }).then(() => {
-        // Hide the left and right sections
-        document.querySelector('.left').classList.add('hidden');
-        document.querySelector('.right').classList.add('hidden');
-
-        // After 2 seconds, show the sections again
-        setTimeout(() => {
-          document.querySelector('.left').classList.remove('hidden');
-          document.querySelector('.right').classList.remove('hidden');
-        }, 500);
-        // Redirect to the dashboard page
         window.location.href = 'index.html';
       });
     } else {
-      // If login fails
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Gagal',
-        text: 'Username atau password salah.',
-        customClass: {
-          popup: 'bg-white',  // Solid white background
-        },
-      });
-
-      // Hide the left and right sections for 2 seconds
-      document.querySelector('.left').classList.add('hidden');
-      document.querySelector('.right').classList.add('hidden');
-
-      // After 2 seconds, show the sections again
-      setTimeout(() => {
-        document.querySelector('.left').classList.remove('hidden');
-        document.querySelector('.right').classList.remove('hidden');
-      }, 2000);
+      throw new Error(data.msg || 'Login failed');
     }
   } catch (err) {
+    hideSections(); // Hide before showing error
     Swal.fire({
       icon: 'error',
-      title: 'Terjadi Kesalahan',
-      text: 'Silakan coba lagi nanti.',
+      title: 'Login Gagal',
+      text: err.message || 'Username atau password salah.',
       customClass: {
-        popup: 'bg-white',  // Solid white background
+        popup: 'bg-white',
       },
+      didClose: () => {
+        showSections(); // Show sections after SweetAlert closes
+      }
     });
-
-    // Hide the left and right sections for 2 seconds
-    document.querySelector('.left').classList.add('hidden');
-    document.querySelector('.right').classList.add('hidden');
-
-    // After 2 seconds, show the sections again
-    setTimeout(() => {
-      document.querySelector('.left').classList.remove('hidden');
-      document.querySelector('.right').classList.remove('hidden');
-    }, 2000);
   }
 });
 
@@ -128,79 +130,54 @@ registerForm.addEventListener('submit', async (e) => {
   try {
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ username, password }),
     });
 
+    const data = await response.json();
+
     if (response.ok) {
+      hideSections(); // Hide sections instead of body
+
+      // Keep existing success SweetAlert
       Swal.fire({
         icon: 'success',
         title: 'Registrasi Berhasil!',
         text: 'Silakan login untuk melanjutkan.',
-        backdrop: `
-          rgba(0, 0, 0, 1) url('/images/your-image.gif') left top no-repeat
-        `, // Fully opaque black backdrop with optional animated image
+        backdrop: `rgba(0, 0, 0, 1)`,
         customClass: {
-          popup: 'bg-white',  // Solid white background for the SweetAlert
-          title: 'text-black', // Optional: Black title text
-          content: 'text-black', // Optional: Black content text
+          popup: 'bg-white',
+          title: 'text-black',
+          content: 'text-black',
         },
       }).then(() => {
-        // Hide the left and right sections
-        document.querySelector('.left').classList.add('hidden');
-        document.querySelector('.right').classList.add('hidden');
-
-        // After 2 seconds, show the sections again
-        setTimeout(() => {
-          document.querySelector('.left').classList.remove('hidden');
-          document.querySelector('.right').classList.remove('hidden');
-        }, 500);
-        // Redirect to the dashboard page
-        window.location.href = 'index.html';
+        // Switch to login form
+        registerSection.classList.add('hidden');
+        loginSection.classList.remove('hidden');
+        // Show sections again
+        document.querySelector('.left').style.opacity = '1';
+        document.querySelector('.right').style.opacity = '1';
       });
     } else {
-      // If registration fails
-      Swal.fire({
-        icon: 'error',
-        title: 'Registrasi Gagal',
-        text: 'Username mungkin sudah digunakan.',
-        customClass: {
-          popup: 'bg-white',  // Solid white background
-        },
-      });
-
-      // Hide the left and right sections for 2 seconds
-      document.querySelector('.left').classList.add('hidden');
-      document.querySelector('.right').classList.add('hidden');
-
-      // After 2 seconds, show the sections again
-      setTimeout(() => {
-        document.querySelector('.left').classList.remove('hidden');
-        document.querySelector('.right').classList.remove('hidden');
-      }, 2000);
+      throw new Error(data.msg || 'Registration failed');
     }
   } catch (err) {
+    hideSections(); // Hide before showing error
     Swal.fire({
       icon: 'error',
-      title: 'Terjadi Kesalahan',
-      text: 'Silakan coba lagi nanti.',
+      title: 'Registrasi Gagal',
+      text: err.message || 'Username mungkin sudah digunakan.',
       customClass: {
-        popup: 'bg-white',  // Solid white background
+        popup: 'bg-white',
       },
+      didClose: () => {
+        showSections(); // Show sections after SweetAlert closes
+      }
     });
-
-    // Hide the left and right sections for 2 seconds
-    document.querySelector('.left').classList.add('hidden');
-    document.querySelector('.right').classList.add('hidden');
-
-    // After 2 seconds, show the sections again
-    setTimeout(() => {
-      document.querySelector('.left').classList.remove('hidden');
-      document.querySelector('.right').classList.remove('hidden');
-    }, 2000);
   }
 });
-
 
 const fileInput = document.getElementById('file-upload');
 const uploadButton = document.getElementById('upload-btn');
