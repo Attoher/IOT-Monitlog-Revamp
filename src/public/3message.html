@@ -43,7 +43,7 @@
                     <div class="profile-photo">
                         <img src="./images/Troll.webp" alt="Profile Photo">
                     </div>
-                    <a href="0login.html"><h5>User</h5></a>
+                    <a href="0login.html"><h5 id="username-display">User</h5></a>
                     <span class="material-symbols-outlined">keyboard_arrow_down</span>
                 </div>
                 <button id="menu-btn">
@@ -106,12 +106,97 @@
             
             <div class="message-section notice">
                 <h2>Pemberitahuan: Pembaruan perangkat lunak baru saja selesai dan sistem siap digunakan kembali.</h2>
+            </div>         
+        </section>
+        <section class="right">
+            <div class="investments">
+                <div class="header">
+                    <h2>Avg Temp (Monthly)</h2>
+                    <a href="#">More <span class="material-icons-sharp">chevron_right</span></a>
+                </div>
+                <div class="item">
+                    <img src="./images/AC.png">
+                    <h4>AC</h4>
+                    <div class="date-time">
+                        <p>Nov, 2024</p>
+                        <small class="text-muted">9:14 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p>18°C</p>
+                    </div>
+                 
+                </div>
+                <div class="item">
+                    <img src="./images/Temp.png" alt="Temperature Icon" class="item-image">
+                    <h4 class="item-title">Room</h4>
+                    <div class="date-time">
+                        <p class="date">Nov, 2024</p>
+                        <small class="text-muted time">4:02 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p class="temp-value">25°C</p>
+                    </div>
+                </div>                
+                <div class="item">
+                    <img src="./images/Fridge.png">
+                    <h4>Fridge</h4>
+                    <div class="date-time">
+                        <p>Nov, 2024</p>
+                        <small class="text-muted">8:17 pm</small>
+                    </div>
+                    <div class="bonds">
+                        <p>4°C</p>
+                    </div>
+                </div>
             </div>
-                           
+            <div class="recent-transactions">
+                <div class="header">
+                    <h2>Recent Temperature</h2>
+                    <a href="#">More <span class="material-icons-sharp">chevron_right</span></a>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-purple-light">
+                            <span class="material-symbols-outlined purple">mode_fan</span>
+                        </div>
+                        <div class="details">
+                            <h4>AC</h4>
+                            <p>20.11.2024</p>
+                        </div>
+                    </div>
+                    <h4>18°C</h4>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-danger-light">
+                            <span class="material-symbols-outlined danger">device_thermostat</span>
+                        </div>
+                        <div class="details">
+                            <h4>Room Temperature</h4>
+                            <p>21.11.2024</p>
+                        </div>
+                    </div>
+                    <h4>27°C</h4>
+                </div>
+                <div class="transaction">
+                    <div class="service">
+                        <div class="icon bg-success-light">
+                            <span class="material-symbols-outlined success">kitchen</span>
+                        </div>
+                        <div class="details">
+                            <h4>Fridge</h4>
+                            <p>15.11.2024</p>
+                        </div>
+                    </div>
+            
+                    <h4>4°C</h4>
+                </div>
+            </div><br>
         </section>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./JS/main.js"></script>
     <script src="./JS/search.js"></script>
+    <script src="./JS/dashboard.js"></script>
 </body>
 </html>
