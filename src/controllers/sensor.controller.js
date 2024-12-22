@@ -8,8 +8,33 @@ const sensorController = {
         try {
             const db = client.db("suhu");
             const collection = db.collection("iotmonitlog");
-            const data = await collection.findOne({}, { sort: { timestamp: -1 } });
-            res.json(data || { value: 'N/A' });
+    
+            const data = await collection.aggregate([
+                {
+                    $sort: { "_time": -1 }
+                },
+                {
+                    $group: {
+                        _id: {
+                            sensor_id: "$sensor_id",
+                            measurement: "$_measurement"
+                        },
+                        value: { $first: "$_value" },
+                        time: { $first: "$_time" }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        sensor_id: "$_id.sensor_id",
+                        measurement: "$_id.measurement",
+                        value: "$value",
+                        timestamp: "$time"
+                    }
+                }
+            ]).toArray();
+    
+            res.json(data);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -19,8 +44,32 @@ const sensorController = {
         try {
             const db = client.db("kelembapan");
             const collection = db.collection("iotmonitlog");
-            const data = await collection.findOne({}, { sort: { timestamp: -1 } });
-            res.json(data || { value: 'N/A' });
+            const data = await collection.aggregate([
+                {
+                    $sort: { "_time": -1 }
+                },
+                {
+                    $group: {
+                        _id: {
+                            sensor_id: "$sensor_id",
+                            measurement: "$_measurement"
+                        },
+                        value: { $first: "$_value" },
+                        time: { $first: "$_time" }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        sensor_id: "$_id.sensor_id",
+                        measurement: "$_id.measurement",
+                        value: "$value",
+                        timestamp: "$time"
+                    }
+                }
+            ]).toArray();
+    
+            res.json(data);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -30,8 +79,32 @@ const sensorController = {
         try {
             const db = client.db("listrik");
             const collection = db.collection("iotmonitlog");
-            const data = await collection.findOne({}, { sort: { timestamp: -1 } });
-            res.json(data || { value: 'N/A' });
+            const data = await collection.aggregate([
+                {
+                    $sort: { "_time": -1 }
+                },
+                {
+                    $group: {
+                        _id: {
+                            sensor_id: "$sensor_id",
+                            measurement: "$_measurement"
+                        },
+                        value: { $first: "$_value" },
+                        time: { $first: "$_time" }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        sensor_id: "$_id.sensor_id",
+                        measurement: "$_id.measurement",
+                        value: "$value",
+                        timestamp: "$time"
+                    }
+                }
+            ]).toArray();
+    
+            res.json(data);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

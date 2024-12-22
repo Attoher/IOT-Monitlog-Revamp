@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const type = item._measurement || 'unknown';
             const field = item._field || 'value';
             const sensorId = item.sensor_id || 'value';
-            const label = `${type} ${field} ${sensorId}`;
+            const label = `${type} ${sensorId}`;
     
             if (!acc[type]) acc[type] = {};
             if (!acc[type][field]) acc[type][field] = {};
