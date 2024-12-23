@@ -19,6 +19,7 @@
     <!-- STYLESHEET -->
     <link rel="stylesheet" href="./CSS/style.css">
     <link rel="stylesheet" href="./CSS/msg.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 </head>
 <body>
     <div class="loader">
@@ -84,29 +85,10 @@
             </div>
         </aside>
         <section class="middle">
-            <div class="message-section success">
-                <h2>Semua sistem berjalan dengan baik! Tidak ada masalah yang ditemukan.</h2>
+            <div class="loading-messages">
+                <span class="material-symbols-outlined">sync</span>
+                <p>Loading messages...</p>
             </div>
-            
-            <div class="message-section warning">
-                <h2>Perhatian: Suhu terlalu tinggi, pastikan sistem pendingin berfungsi dengan baik.</h2>
-            </div>
-            
-            <div class="message-section error">
-                <h2>Kesalahan: Konsumsi listrik melebihi batas aman. Mohon periksa perangkat Anda.</h2>
-            </div>
-            
-            <div class="message-section info">
-                <h2>Informasi: Pemeliharaan sistem akan dilakukan pada pukul 22:00. Pastikan semua data telah disimpan.</h2>
-            </div>
-            
-            <div class="message-section critical">
-                <h2>Kesalahan Kritis: Sistem mengalami kegagalan. Harap hubungi tim teknis segera.</h2>
-            </div>
-            
-            <div class="message-section notice">
-                <h2>Pemberitahuan: Pembaruan perangkat lunak baru saja selesai dan sistem siap digunakan kembali.</h2>
-            </div>         
         </section>
         <section class="right">
             <div class="investments">
@@ -188,9 +170,17 @@
                             <p>15.11.2024</p>
                         </div>
                     </div>
-            
                     <h4>4°C</h4>
                 </div>
+                <div class="message-mode-toggle">
+                    <button id="current-mode" class="mode-btn active">Current</button>
+                    <button id="history-mode" class="mode-btn">History</button>
+                </div>
+                <a class="badge" id="prev-chart-btn" style="display: inline-block;">Previous</a>
+                <a class="badge" id="next-chart-btn" style="display: inline-block;">Next</a>
+                <a class="badge" id="clear-chart-btn" style="display: inline-block;">clear</a><br>
+                <br>
+                <h2 id="pageStatus"></h2>
             </div><br>
         </section>
     </main>
@@ -198,5 +188,8 @@
     <script src="./JS/main.js"></script>
     <script src="./JS/search.js"></script>
     <script src="./JS/dashboard.js"></script>
+    <script src="./JS/messages.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="./JS/notifications.js"></script>
 </body>
 </html>

@@ -19,6 +19,7 @@
     <!-- STYLESHEET -->
     <link rel="stylesheet" href="./CSS/style.css">
     <link rel="stylesheet" href="./CSS/analytics.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 </head>
 <body>
     <div class="loader">
@@ -83,41 +84,17 @@
                 <a href="2analytics.html">Update Now</a>
             </div>
         </aside>
+        
         <section class="middle">
             <div class="dashboard">
-                <div class="header">
-                    <div class="header-item">Suhu</div>
-                    <div class="header-item">Kelembapan</div>
-                    <div class="header-item">Konsumsi Listrik</div>
-                </div>
-                <div class="content">
-                    <!-- Card Suhu -->
-                    <div class="card">
-                        <div class="info">
-                            <h2 id="temp-value">Loading...</h2>
-                            <h2>AC</h2>
-                            <img src="images/Temp.png" alt="Thermometer" class="icon">
-                        </div>
-                        <p class="status">Mengecek... <span class="indicator"></span></p>
-                    </div>
-                    <!-- Card Kelembapan -->
-                    <div class="card">
-                        <div class="info">
-                            <h2 id="humidity-value">Loading...</h2>
-                            <img src="images/humidity.png" alt="Humidity" class="icon">
-                        </div>
-                        <p class="status">Mengecek... <span class="indicator"></span></p>
-                    </div>
-                    <!-- Card Konsumsi Listrik -->
-                    <div class="card">
-                        <div class="info">
-                            <h2 id="power-value">Loading...</h2>
-                            <img src="images/power.png" alt="Power" class="icon">
-                        </div>
-                    </div>
-                </div>
+              <div class="header"><br>
+                <div class="header-item"><h1>Sensors Data</h1></div>
+              </div>
+              <div id="dashboard-content">
+                <!-- Content will be dynamically populated -->
+              </div>
             </div>
-        </section>  
+        </section>
         <section class="right">
             <div class="investments">
                 <div class="header">
@@ -202,11 +179,17 @@
                     <h4>4°C</h4>
                 </div>
             </div><br>
+            <a class="badge" id="prev-chart-btn" style="display: inline-block;">Previous</a>
+            <a class="badge" id="next-chart-btn" style="display: inline-block;">Next</a><br>
+            <br>
+            <h2 id="pageStatus"></h2>
         </section>        
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./JS/main.js"></script>
     <script src="./JS/search.js"></script>
     <script src="./JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="./JS/notifications.js"></script>
 </body>
 </html>

@@ -16,20 +16,22 @@ const sensorController = {
                 {
                     $group: {
                         _id: {
-                            sensor_id: "$sensor_id",
-                            measurement: "$_measurement"
+                            measurement: "$_measurement",
+                            sensor_id: "$sensor_id"
                         },
                         value: { $first: "$_value" },
+                        field: { $first: "$_field" },
                         time: { $first: "$_time" }
                     }
                 },
                 {
                     $project: {
-                        _id: 0,
-                        sensor_id: "$_id.sensor_id",
                         measurement: "$_id.measurement",
+                        sensor_id: "$_id.sensor_id",
                         value: "$value",
-                        timestamp: "$time"
+                        field: "$field",
+                        timestamp: "$time",
+                        _id: 0
                     }
                 }
             ]).toArray();
@@ -51,20 +53,22 @@ const sensorController = {
                 {
                     $group: {
                         _id: {
-                            sensor_id: "$sensor_id",
-                            measurement: "$_measurement"
+                            measurement: "$_measurement",
+                            sensor_id: "$sensor_id"
                         },
                         value: { $first: "$_value" },
+                        field: { $first: "$_field" },
                         time: { $first: "$_time" }
                     }
                 },
                 {
                     $project: {
-                        _id: 0,
-                        sensor_id: "$_id.sensor_id",
                         measurement: "$_id.measurement",
+                        sensor_id: "$_id.sensor_id",
                         value: "$value",
-                        timestamp: "$time"
+                        field: "$field",
+                        timestamp: "$time",
+                        _id: 0
                     }
                 }
             ]).toArray();
@@ -86,20 +90,22 @@ const sensorController = {
                 {
                     $group: {
                         _id: {
-                            sensor_id: "$sensor_id",
-                            measurement: "$_measurement"
+                            measurement: "$_measurement",
+                            sensor_id: "$sensor_id"
                         },
                         value: { $first: "$_value" },
+                        field: { $first: "$_field" },
                         time: { $first: "$_time" }
                     }
                 },
                 {
                     $project: {
-                        _id: 0,
-                        sensor_id: "$_id.sensor_id",
                         measurement: "$_id.measurement",
+                        sensor_id: "$_id.sensor_id",
                         value: "$value",
-                        timestamp: "$time"
+                        field: "$field",
+                        timestamp: "$time",
+                        _id: 0
                     }
                 }
             ]).toArray();

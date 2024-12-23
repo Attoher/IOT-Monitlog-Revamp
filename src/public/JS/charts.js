@@ -8,9 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentChartIndex = 0;
     let charts = []; // Array to store rendered charts
   
-    // Hide the Prev and Next buttons by default
-    prevBtn.style.display = "none";
-    nextBtn.style.display = "none";
+    // Update initial button state to use opacity
+    prevBtn.style.opacity = "0.5";
+    prevBtn.style.cursor = "not-allowed";
+    nextBtn.style.opacity = "0.5";
+    nextBtn.style.cursor = "not-allowed";
 
     async function fetchData(type) {
         try {
@@ -101,8 +103,10 @@ document.addEventListener("DOMContentLoaded", function () {
         currentChartIndex = 0; // Start from the first page
         charts = []; // Clear previous charts
         chartContainer.innerHTML = ''; // Clear the chart container
-        prevBtn.style.display = "none"; // Hide prev button
-        nextBtn.style.display = "none"; // Hide next button
+        prevBtn.style.opacity = "0.5";
+        prevBtn.style.cursor = "not-allowed";
+        nextBtn.style.opacity = "0.5";
+        nextBtn.style.cursor = "not-allowed";
     }
   
     // Fetch data and render the chart
@@ -160,6 +164,22 @@ document.addEventListener("DOMContentLoaded", function () {
     
             return acc;
         }, {});
+    
+        // Sort labels numerically when creating datasets
+        Object.keys(groupedData).forEach((type) => {
+            Object.keys(groupedData[type]).forEach((field) => {
+                const sortedLabels = Object.keys(groupedData[type][field]).sort((a, b) => {
+                    const numA = parseInt(a.split(' ')[1]);
+                    const numB = parseInt(b.split(' ')[1]);
+                    return numA - numB;
+                });
+                const sortedData = {};
+                sortedLabels.forEach(label => {
+                    sortedData[label] = groupedData[type][field][label];
+                });
+                groupedData[type][field] = sortedData;
+            });
+        });
     
         // Random color generator for charts
         function getRandomColor() {
@@ -233,7 +253,8 @@ document.addEventListener("DOMContentLoaded", function () {
             displayChartAtIndex(0);
             pageStatus.innerHTML = `Page: 1 of ${charts.length}`;
             if (charts.length > 1) {
-                nextBtn.style.display = "inline-block"; // Show Next button if there is more than one chart
+                nextBtn.style.opacity = "1";
+                nextBtn.style.cursor = "pointer";
             }
         } else {
             pageStatus.innerHTML = "No data available";
@@ -253,9 +274,12 @@ document.addEventListener("DOMContentLoaded", function () {
             currentChartIndex++;
             displayChartAtIndex(currentChartIndex);
             pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
-            prevBtn.style.display = "inline-block"; // Show prev button when possible
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+            
             if (currentChartIndex === charts.length - 1) {
-                nextBtn.style.display = "none"; // Hide next button on the last chart
+                nextBtn.style.opacity = "0.5";
+                nextBtn.style.cursor = "not-allowed";
             }
         }
     });
@@ -265,9 +289,12 @@ document.addEventListener("DOMContentLoaded", function () {
             currentChartIndex--;
             displayChartAtIndex(currentChartIndex);
             pageStatus.innerHTML = `Page: ${currentChartIndex + 1} of ${charts.length}`;
-            nextBtn.style.display = "inline-block"; // Show next button when possible
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+            
             if (currentChartIndex === 0) {
-                prevBtn.style.display = "none"; // Hide prev button on the first chart
+                prevBtn.style.opacity = "0.5";
+                prevBtn.style.cursor = "not-allowed";
             }
         }
     });

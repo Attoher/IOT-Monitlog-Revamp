@@ -7,6 +7,7 @@ dotenv.config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const loginRouter = require('./routes/login.router');
 const sensorRouter = require('./routes/sensor.router');
+const messageRouter = require('./routes/message.routes');
 
 const mongoURI = "mongodb+srv://alden:1234@iot.hooqj.mongodb.net/?retryWrites=true&w=majority&appName=iot";
 const client = new MongoClient(mongoURI, {
@@ -20,6 +21,7 @@ const client = new MongoClient(mongoURI, {
 const dbSuhu = "suhu";
 const dbListrik = "listrik";
 const dbKelembapan = "kelembapan";
+const dbSystem = "messages"; // Add this with other db declarations
 
 const app = express();
 
@@ -35,6 +37,7 @@ app.use(express.static(publicPath));
 // Routes
 app.use('/auth', loginRouter);
 app.use('/api/sensors', sensorRouter);
+app.use('/api', messageRouter); // Update the message router route to use /api prefix
 
 // MongoDB Connection and Database endpoints
 let dbSuhuClient, dbListrikClient, dbKelembapanClient;
@@ -46,10 +49,19 @@ async function run() {
 
     await client.db("admin").command({ ping: 1 });
 
-    // Inisialisasi koneksi untuk masing-masing database
+    // Store MongoDB client in app.locals for global access
+    app.locals.db = client;
+
+    // Initialize database connections
     dbSuhuClient = client.db(dbSuhu);
     dbListrikClient = client.db(dbListrik);
     dbKelembapanClient = client.db(dbKelembapan);
+
+    // Create messages database and collection instead of using system db
+    const messagesDb = client.db(dbSystem);
+    await messagesDb.createCollection("messages");
+    await messagesDb.collection("messages").createIndex({ timestamp: -1 });
+
   } catch (err) {
     console.error("Failed to connect to MongoDB:", err);
   }
