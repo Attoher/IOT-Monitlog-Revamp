@@ -3,6 +3,8 @@ const API_BASE_URL = window.location.hostname === 'localhost'
   : 'https://iot-monitlog-revamp.vercel.app/auth'; // Base URL backend untuk user
 
 // Elemen DOM
+const leftSection = document.getElementById('left-section');
+const rightSection = document.getElementById('right-section');
 const loginSection = document.getElementById('login-section');
 const registerSection = document.getElementById('register-section');
 const todoSection = document.getElementById('todo-section');
@@ -113,10 +115,11 @@ loginForm.addEventListener('submit', async (e) => {
       text: err.message || 'Username atau password salah.',
       customClass: {
         popup: 'bg-white',
-      },
-      didClose: () => {
-        showSections(); // Show sections after SweetAlert closes
+        title: 'text-black',
+        content: 'text-black',
       }
+    }).then(() => {
+      window.location.href = '0login.html';
     });
   }
 });
@@ -153,12 +156,7 @@ registerForm.addEventListener('submit', async (e) => {
           content: 'text-black',
         },
       }).then(() => {
-        // Switch to login form
-        registerSection.classList.add('hidden');
-        loginSection.classList.remove('hidden');
-        // Show sections again
-        document.querySelector('.left').style.opacity = '1';
-        document.querySelector('.right').style.opacity = '1';
+        window.location.href = '0login.html';
       });
     } else {
       throw new Error(data.msg || 'Registration failed');
@@ -175,6 +173,8 @@ registerForm.addEventListener('submit', async (e) => {
       didClose: () => {
         showSections(); // Show sections after SweetAlert closes
       }
+    }).then(() => {
+      window.location.href = '0login.html';
     });
   }
 });
