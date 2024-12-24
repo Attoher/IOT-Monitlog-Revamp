@@ -7,6 +7,8 @@
 | Aloysius dedeo darmo susanto  | 5025221174 | PWEB C |
 
 ## Nama Aplikasi : IOT Monitlog
+
+![Iot Monitlog](https://github.com/user-attachments/assets/7fbe1cfa-2c4a-41bc-b04f-e8562d7b243b)
  
 ## Deskripsi Aplikasi 
 Web IoT ini dirancang untuk mengelola dan memantau perangkat IoT dengan kemampuan untuk merekam (log) data secara terus-menerus dari berbagai sensor dan perangkat yang terhubung. Platform ini memberikan kemampuan bagi pengguna untuk memonitor performa perangkat IoT dan menyimpan data untuk analisis lebih lanjut.
