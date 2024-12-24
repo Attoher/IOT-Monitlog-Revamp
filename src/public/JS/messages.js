@@ -188,13 +188,12 @@ function updatePaginationControls(pagination) {
     const nextBtn = document.getElementById('next-chart-btn');
     const pageStatus = document.getElementById('pageStatus');
 
-    // Ensure buttons are always visible
-    prevBtn.style.display = 'inline-block';
-    nextBtn.style.display = 'inline-block';
-    pageStatus.style.display = 'block';
-
     if (isHistoryMode) {
-        // History mode logic
+        // Make navigation visible and active in history mode
+        prevBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'inline-block';
+        pageStatus.style.display = 'block';
+
         if (pagination.currentPage > 1) {
             prevBtn.style.opacity = '1';
             prevBtn.style.cursor = 'pointer';
@@ -211,30 +210,28 @@ function updatePaginationControls(pagination) {
             nextBtn.style.cursor = 'not-allowed';
         }
         pageStatus.style.opacity = '1';
+        pageStatus.textContent = `Halaman ${pagination.currentPage} dari ${pagination.totalPages}`;
     } else {
-        // Current mode - buttons visible but inactive
-        prevBtn.style.opacity = '0.5';
-        nextBtn.style.opacity = '0.5';
-        pageStatus.style.opacity = '0.5';
-        prevBtn.style.cursor = 'not-allowed';
-        nextBtn.style.cursor = 'not-allowed';
+        // Hide navigation in current mode
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        pageStatus.style.display = 'none';
     }
-
-    pageStatus.textContent = `Halaman ${pagination.currentPage} dari ${pagination.totalPages}`;
 }
 
 // Add event listeners for pagination buttons
 document.getElementById('prev-chart-btn').addEventListener('click', () => {
-    if (currentPage > 1) {
+    if (isHistoryMode && currentPage > 1) {
         fetchMessages(currentPage - 1);
     }
 });
 
-// Replace the next button event listener with this updated version
 document.getElementById('next-chart-btn').addEventListener('click', () => {
-    const totalPages = parseInt(document.getElementById('pageStatus').textContent.split(' ').pop());
-    if (currentPage < totalPages) {
-        fetchMessages(currentPage + 1);
+    if (isHistoryMode) {
+        const totalPages = parseInt(document.getElementById('pageStatus').textContent.split(' ').pop());
+        if (currentPage < totalPages) {
+            fetchMessages(currentPage + 1);
+        }
     }
 });
 

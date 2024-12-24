@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const mongoURI = "mongodb+srv://alden:1234@iot.hooqj.mongodb.net/?retryWrites=true&w=majority&appName=iot";
+const mongoURI = process.env.MONGODB_URI;
 const client = new MongoClient(mongoURI);
 
 const sensorController = {

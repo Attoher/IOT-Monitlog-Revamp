@@ -9,7 +9,12 @@ const loginRouter = require('./routes/login.router');
 const sensorRouter = require('./routes/sensor.router');
 const messageRouter = require('./routes/message.routes');
 
-const mongoURI = "mongodb+srv://alden:1234@iot.hooqj.mongodb.net/?retryWrites=true&w=majority&appName=iot";
+const mongoURI = process.env.MONGODB_URI;
+const dbSuhu = "suhu";
+const dbListrik = "listrik";
+const dbKelembapan = "kelembapan";
+const dbSystem = "messages";
+
 const client = new MongoClient(mongoURI, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -17,11 +22,6 @@ const client = new MongoClient(mongoURI, {
     deprecationErrors: true,
   }
 });
-
-const dbSuhu = "suhu";
-const dbListrik = "listrik";
-const dbKelembapan = "kelembapan";
-const dbSystem = "messages"; // Add this with other db declarations
 
 const app = express();
 

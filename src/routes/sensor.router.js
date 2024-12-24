@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const sensorController = require('../controllers/sensor.controller')
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const mongoURI = "mongodb+srv://alden:1234@iot.hooqj.mongodb.net/?retryWrites=true&w=majority&appName=iot";
+const mongoURI = process.env.MONGODB_URI;
 const client = new MongoClient(mongoURI, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -30,9 +30,9 @@ let dbKelembapan;
 async function initDbConnections() {
     try {
         await client.connect();
-        dbSuhu = client.db("suhu").collection("suhu");
-        dbKelembapan = client.db("kelembapan").collection("kelembapan");
-        dbListrik = client.db("listrik").collection("konsumsiListrik");
+        dbSuhu = client.db("suhu").collection("iotmonitlog");
+        dbKelembapan = client.db("kelembapan").collection("iotmonitlog");
+        dbListrik = client.db("listrik").collection("iotmonitlog");
         console.log("Successfully connected to databases");
     } catch (error) {
         console.error("Database connection error:", error);
