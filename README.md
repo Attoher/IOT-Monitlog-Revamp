@@ -46,6 +46,9 @@ Web IoT ini dirancang untuk mengelola dan memantau perangkat IoT dengan kemampua
 12. Fitur postman :
     Menyediakan fitur postman dengan method GET dan POST untuk memastikan backend aplikasi berjalan dan melihat data yang ada di website ini.
 
+13. Tampilan yang interaktif :
+    Menyediakan tampilan yang interaktif yang akan menyesuaikan device yang digunakan oleh pengguna.
+
 Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisis data perangkat IoT secara terpusat melalui web, sehingga lebih mudah untuk mengidentifikasi masalah atau tren dalam data perangkat IoT yang digunakan.
 
 ### Requirement :
@@ -121,6 +124,19 @@ Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisi
 ![image](https://github.com/user-attachments/assets/4baba3d3-2cc9-4ea1-92d8-d443b4a21b31)
 
 ![image](https://github.com/user-attachments/assets/dadd4db3-22d4-4e94-b493-29d6d2df6909)
+
+# Tampilan Pada Mobile 
+
+![image](https://github.com/user-attachments/assets/dd99c55a-f5d9-4dca-916a-3f4a018dd266)
+
+![image](https://github.com/user-attachments/assets/73ada115-e767-4b82-a7b6-ea825512ed6c)
+
+![image](https://github.com/user-attachments/assets/86fe7b49-ef33-4fe9-85a8-d1cee483f22b)
+
+![image](https://github.com/user-attachments/assets/fe6ba2d2-5f39-48da-9c94-548a0f8da19a)
+
+
+
 
 
 
