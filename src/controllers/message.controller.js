@@ -12,74 +12,96 @@ const messageController = {
             }
 
             const page = parseInt(req.query.page) || 1;
+            const mode = req.query.mode || 'current';
             const skip = (page - 1) * MESSAGES_PER_PAGE;
-
             const now = new Date();
+
+            // Set up the current minute timestamp
             const currentMinuteTimestamp = new Date(
                 now.getFullYear(),
                 now.getMonth(),
                 now.getDate(),
                 now.getHours(),
                 now.getMinutes()
-            ).getTime();
+            );
 
-            // Only update messages at the start of each minute
-            if (currentMinuteTimestamp > lastUpdateTimestamp) {
-                // Check if messages already exist for this minute
-                const existingMessages = await client.db("messages").collection("messages")
-                    .find({
-                        timestamp: {
-                            $gte: new Date(currentMinuteTimestamp),
-                            $lt: new Date(currentMinuteTimestamp + 60000) // Next minute
-                        }
-                    }).toArray();
-
-                if (existingMessages.length === 0) {
-                    // Get latest sensor data
-                    const sensorData = {
-                        suhu: {
-                            Fridge: await getLatestValue(client, "suhu", "Fridge"),
-                            AC: await getLatestValue(client, "suhu", "AC"),
-                            RoomTemperature: await getLatestValue(client, "suhu", "RoomTemperature")
-                        },
-                        kelembapan: {
-                            Fridge: await getLatestValue(client, "kelembapan", "Fridge"),
-                            AC: await getLatestValue(client, "kelembapan", "AC"),
-                            RoomHumidity: await getLatestValue(client, "kelembapan", "RoomHumidity")
-                        },
-                        konsumsiListrik: {
-                            AC: await getLatestValue(client, "listrik", "AC"),
-                            Fridge: await getLatestValue(client, "listrik", "Fridge"),
-                            RoomCensor: await getLatestValue(client, "listrik", "RoomCensor"),
-                            TV: await getLatestValue(client, "listrik", "TV")
-                        }
-                    };
-
-                    const messages = generateSystemMessages(sensorData);
-                    
-                    // Store in messages database
-                    if (messages.length > 0) {
-                        // Ensure all messages have exactly the same timestamp
-                        const exactTimestamp = new Date(currentMinuteTimestamp);
-                        const messagesWithTimestamp = messages.map(msg => ({
-                            ...msg,
-                            timestamp: exactTimestamp,
-                            _id: new Date().getTime() + Math.random().toString(36).substring(7)
-                        }));
-                        await client.db("messages").collection("messages").insertMany(messagesWithTimestamp);
+            // Only generate new messages if we're in current mode and it's time for an update
+            if (mode === 'current' && currentMinuteTimestamp.getTime() > lastUpdateTimestamp) {
+                // Delete previous messages from this minute to prevent duplicates
+                await client.db("messages").collection("messages").deleteMany({
+                    timestamp: {
+                        $gte: currentMinuteTimestamp,
+                        $lt: new Date(currentMinuteTimestamp.getTime() + 60000)
                     }
+                });
+
+                // Fetch latest data
+                const [latestTemp, latestHumidity, latestPower] = await Promise.all([
+                    client.db("suhu").collection("iotmonitlog")
+                        .find({}).sort({ _time: -1 }).toArray(),
+                    client.db("kelembapan").collection("iotmonitlog")
+                        .find({}).sort({ _time: -1 }).toArray(),
+                    client.db("listrik").collection("iotmonitlog")
+                        .find({}).sort({ _time: -1 }).toArray()
+                ]);
+
+                // Generate new messages
+                const messages = generateSystemMessages([
+                    ...latestTemp.map(t => ({ 
+                        ...t, 
+                        field: 'Temperature',
+                        measurement: t._measurement,
+                        value: t._value,
+                        sensor_id: t.sensor_id
+                    })),
+                    ...latestHumidity.map(h => ({ 
+                        ...h, 
+                        field: 'Kelembapan',
+                        measurement: h._measurement,
+                        value: h._value,
+                        sensor_id: h.sensor_id
+                    })),
+                    ...latestPower.map(p => ({ 
+                        ...p, 
+                        field: 'KonsumsiListrik',
+                        measurement: p._measurement,
+                        value: p._value,
+                        sensor_id: p.sensor_id
+                    }))
+                ]);
+
+                if (messages.length > 0) {
+                    const messagesWithTimestamp = messages.map(msg => ({
+                        ...msg,
+                        timestamp: currentMinuteTimestamp,
+                        mode: mode,
+                        messageId: `${msg.device}-${msg.type}-${currentMinuteTimestamp.getTime()}`
+                    }));
+
+                    await client.db("messages").collection("messages")
+                        .insertMany(messagesWithTimestamp);
                 }
 
-                lastUpdateTimestamp = currentMinuteTimestamp;
+                lastUpdateTimestamp = currentMinuteTimestamp.getTime();
             }
 
-            // Get total count for pagination
-            const totalMessages = await client.db("messages").collection("messages").countDocuments();
+            // Fetch messages based on mode
+            let query = {};
+            if (mode === 'current') {
+                query = {
+                    timestamp: {
+                        $gte: currentMinuteTimestamp,
+                        $lt: new Date(currentMinuteTimestamp.getTime() + 60000)
+                    }
+                };
+            }
+
+            const totalMessages = await client.db("messages").collection("messages")
+                .countDocuments(query);
             const totalPages = Math.ceil(totalMessages / MESSAGES_PER_PAGE);
             
-            // Fetch messages with pagination
             const allMessages = await client.db("messages").collection("messages")
-                .find({})
+                .find(query)
                 .sort({ timestamp: -1 })
                 .skip(skip)
                 .limit(MESSAGES_PER_PAGE)
@@ -92,7 +114,7 @@ const messageController = {
                     totalPages: totalPages,
                     totalMessages: totalMessages,
                     messagesPerPage: MESSAGES_PER_PAGE,
-                    nextUpdate: 60 - new Date().getSeconds() // Seconds until next update
+                    nextUpdate: 60 - new Date().getSeconds()
                 }
             });
 

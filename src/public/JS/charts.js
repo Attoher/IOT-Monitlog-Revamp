@@ -142,11 +142,15 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Render the chart
     function renderChart(data) {
+        // Sort data by timestamp first
+        data.sort((a, b) => new Date(a._time) - new Date(b._time));
+
         const groupedData = (Array.isArray(data) ? data : [data]).reduce((acc, item) => {
             const type = item._measurement || 'unknown';
             const field = item._field || 'value';
             const sensorId = item.sensor_id || 'value';
-            const label = `${type} ${sensorId}`;
+            // Create label with padded sensor ID for proper numerical sorting
+            const label = `${type} ${String(sensorId).padStart(3, '0')}`;
     
             if (!acc[type]) acc[type] = {};
             if (!acc[type][field]) acc[type][field] = {};
@@ -155,24 +159,37 @@ document.addEventListener("DOMContentLoaded", function () {
             }
     
             const timestamp = new Date(item._time).toLocaleString();
-            const value = parseFloat(item._value || item._value || 0);
+            const value = parseFloat(item._value || 0);
     
             if (!isNaN(value)) {
-                acc[type][field][label].labels.push(timestamp);
-                acc[type][field][label].values.push(value);
+                // Insert timestamp and value in sorted order
+                const insertIndex = acc[type][field][label].labels.findIndex(
+                    existingTime => new Date(existingTime) > new Date(timestamp)
+                );
+                
+                if (insertIndex === -1) {
+                    acc[type][field][label].labels.push(timestamp);
+                    acc[type][field][label].values.push(value);
+                } else {
+                    acc[type][field][label].labels.splice(insertIndex, 0, timestamp);
+                    acc[type][field][label].values.splice(insertIndex, 0, value);
+                }
             }
     
             return acc;
         }, {});
     
-        // Sort labels numerically when creating datasets
+        // Sort by sensor ID within each measurement type
         Object.keys(groupedData).forEach((type) => {
             Object.keys(groupedData[type]).forEach((field) => {
+                // Convert object to array and sort by sensor ID
                 const sortedLabels = Object.keys(groupedData[type][field]).sort((a, b) => {
-                    const numA = parseInt(a.split(' ')[1]);
-                    const numB = parseInt(b.split(' ')[1]);
-                    return numA - numB;
+                    const sensorA = parseInt(a.split(' ')[1]);
+                    const sensorB = parseInt(b.split(' ')[1]);
+                    return sensorA - sensorB;
                 });
+
+                // Create new object with sorted labels
                 const sortedData = {};
                 sortedLabels.forEach(label => {
                     sortedData[label] = groupedData[type][field][label];
@@ -202,8 +219,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
                 const chartCtx = canvas.getContext('2d');
     
+                // Create datasets with sorted labels
                 const datasets = Object.keys(groupedData[type][field]).map((label) => ({
-                    label: label,
+                    label: label.replace(/\b(\d+)\b/g, match => parseInt(match)), // Remove padding from display
                     data: groupedData[type][field][label].values,
                     borderColor: getRandomColor(),
                     backgroundColor: currentChartType === 'pie' 
