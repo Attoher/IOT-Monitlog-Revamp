@@ -119,9 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>Temperature</h3>
                     <img src="images/Temp.png" alt="Temperature" class="icon">
                 </div>
-                <p class="status" id="status-temp-${measurement.toLowerCase()}-${currentSensorId}">
-                    Mengecek... <span class="indicator"></span>
-                </p>
+                <p class="status" id="status-temp-${measurement.toLowerCase()}-${currentSensorId}"></p>
             </div>
             <div class="card">
                 <div class="info">
@@ -130,9 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>Humidity</h3>
                     <img src="images/humidity.jpg" alt="Humidity" class="icon">
                 </div>
-                <p class="status" id="status-humidity-${measurement.toLowerCase()}-${currentSensorId}">
-                    Mengecek... <span class="indicator"></span>
-                </p>
+                <p class="status" id="status-humidity-${measurement.toLowerCase()}-${currentSensorId}"></p>
             </div>
             <div class="card">
                 <div class="info">
@@ -149,13 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const br = document.createElement('br');
         sensorSection.appendChild(br);
   
-        // Update status indicators
-        if (suhuValue !== 'N/A') {
-            updateTemperatureStatus(suhuValue, measurement, currentSensorId);
-        }
-        if (kelembapanValue !== 'N/A') {
-            updateHumidityStatus(kelembapanValue, measurement, currentSensorId);
-        }
+        // Immediately update status instead of waiting
+        updateTemperatureStatus(suhuValue, measurement, currentSensorId);
+        updateHumidityStatus(kelembapanValue, measurement, currentSensorId);
     });
   
     dashboardContent.appendChild(sensorSection);
@@ -171,23 +163,33 @@ document.addEventListener('DOMContentLoaded', () => {
     return icons[measurement.toUpperCase()] || 'Temp.png';
   }
   
-  function updateTemperatureStatus(value, measurement, sensorId) {
+  function updateTemperatureStatus(value, measurement, sensorId, immediate = false) {
     const statusElement = document.getElementById(`status-temp-${measurement.toLowerCase()}-${sensorId}`);
     if (!statusElement) return;
-  
+
     if (value === 'N/A') {
-        setStatus(statusElement, 'No Data');
+        setStatus(statusElement, 'Tidak Ada Data', 'gray');
         return;
     }
-  
+
     const tempValue = parseFloat(value);
+    if (isNaN(tempValue)) {
+        setStatus(statusElement, 'Error Sensor', 'red');
+        return;
+    }
+
     const thresholds = {
         'AC': { high: 25, low: 18 },
         'FRIDGE': { high: 5, low: 0 },
         'ROOM': { high: 28, low: 20 }
     };
-  
-    const threshold = thresholds[measurement];
+
+    const threshold = thresholds[measurement.toUpperCase()];
+    if (!threshold) {
+        setStatus(statusElement, 'Error Konfigurasi', 'red');
+        return;
+    }
+
     if (tempValue > threshold.high) {
         setStatus(statusElement, 'Terlalu Panas', 'red');
     } else if (tempValue < threshold.low) {
@@ -195,18 +197,23 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         setStatus(statusElement, 'Normal', 'green');
     }
-  }
-  
-  function updateHumidityStatus(value, measurement, sensorId) {
+}
+
+function updateHumidityStatus(value, measurement, sensorId, immediate = false) {
     const statusElement = document.getElementById(`status-humidity-${measurement.toLowerCase()}-${sensorId}`);
     if (!statusElement) return;
-  
+
     if (value === 'N/A') {
-        setStatus(statusElement, 'No Data');
+        setStatus(statusElement, 'Tidak Ada Data', 'gray');
         return;
     }
-  
+
     const humidityValue = parseFloat(value);
+    if (isNaN(humidityValue)) {
+        setStatus(statusElement, 'Error Sensor', 'red');
+        return;
+    }
+
     if (humidityValue > 70) {
         setStatus(statusElement, 'Terlalu Lembab', 'red');
     } else if (humidityValue < 30) {
@@ -214,11 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         setStatus(statusElement, 'Normal', 'green');
     }
-  }
-  
-  function setStatus(element, status, color) {
-    element.innerHTML = `${status} <span class="indicator ${color || ''}"></span>`;
-  }
+}
+
+function setStatus(element, status, color = 'gray') {
+    if (!element) return;
+    
+    const indicatorColors = {
+        'red': '#ff0000',
+        'blue': '#0000ff',
+        'green': '#00ff00',
+        'gray': '#808080'
+    };
+    
+    element.innerHTML = `
+        ${status}
+        <span class="indicator" style="background-color: ${indicatorColors[color] || indicatorColors.gray}"></span>
+    `;
+}
   
   // Add navigation button handlers
   document.getElementById('prev-chart-btn').addEventListener('click', () => {
@@ -257,8 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Auto-refresh data every 5 seconds
-  setInterval(fetchDataFromMongoDB, 5000);
+  // Auto-refresh data every 1 menit
+  setInterval(fetchDataFromMongoDB, 60000);
   
   // Panggil fetchDataFromMongoDB pertama kali saat halaman dimuat
   fetchDataFromMongoDB();

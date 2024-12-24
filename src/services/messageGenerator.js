@@ -26,34 +26,66 @@ function generateSystemMessages(sensorData) {
         }
     };
 
-    // Temperature checks
-    if (suhu > 30) {
-        addMessage('warning', `Perhatian: Suhu ruangan tinggi (${suhu}°C). Mohon periksa sistem pendingin.`);
-    } else if (suhu < 18) {
-        addMessage('warning', `Perhatian: Suhu ruangan rendah (${suhu}°C). Mohon sesuaikan pengaturan suhu.`);
+    // Temperature checks for different devices
+    if (suhu.Fridge > -5) {
+        addMessage('warning', `Suhu kulkas terlalu tinggi (${suhu.Fridge}°C). Periksa sistem pendingin kulkas.`);
+    } else if (suhu.Fridge < -20) {
+        addMessage('warning', `Suhu kulkas terlalu rendah (${suhu.Fridge}°C). Sesuaikan pengaturan suhu kulkas.`);
     }
 
-    // Humidity checks
-    if (kelembapan > 70) {
-        addMessage('error', `Peringatan: Kelembapan tinggi (${kelembapan}%). Mohon periksa ventilasi ruangan.`);
-    } else if (kelembapan < 30) {
-        addMessage('error', `Peringatan: Kelembapan rendah (${kelembapan}%). Mohon gunakan humidifier.`);
+    if (suhu.AC > 28) {
+        addMessage('warning', `AC tidak mendingin dengan baik (${suhu.AC}°C). Periksa unit AC.`);
+    } else if (suhu.AC < 16) {
+        addMessage('warning', `Suhu AC terlalu dingin (${suhu.AC}°C). Sesuaikan pengaturan AC.`);
     }
 
-    // Power consumption checks
-    if (konsumsiListrik > 240) {
-        addMessage('critical', `PERHATIAN PENTING: Konsumsi listrik melebihi batas (${konsumsiListrik}V)!`);
+    if (suhu.RoomTemperature > 30) {
+        addMessage('warning', `Suhu ruangan tinggi (${suhu.RoomTemperature}°C). Aktifkan pendingin ruangan.`);
+    } else if (suhu.RoomTemperature < 18) {
+        addMessage('warning', `Suhu ruangan rendah (${suhu.RoomTemperature}°C). Periksa sirkulasi udara.`);
     }
 
-    // Only add normal status if there are absolutely no warnings or errors
+    // Humidity checks for different locations
+    if (kelembapan.Fridge > 60) {
+        addMessage('error', `Kelembapan kulkas tinggi (${kelembapan.Fridge}%). Periksa seal pintu kulkas.`);
+    }
+
+    if (kelembapan.AC > 70) {
+        addMessage('error', `Kelembapan area AC tinggi (${kelembapan.AC}%). Periksa drainase AC.`);
+    }
+
+    if (kelembapan.RoomHumidity > 70) {
+        addMessage('error', `Kelembapan ruangan tinggi (${kelembapan.RoomHumidity}%). Aktifkan dehumidifier.`);
+    } else if (kelembapan.RoomHumidity < 30) {
+        addMessage('error', `Kelembapan ruangan rendah (${kelembapan.RoomHumidity}%). Aktifkan humidifier.`);
+    }
+
+    // Power consumption checks for each device
+    if (konsumsiListrik.AC > 1000) {
+        addMessage('critical', `Konsumsi listrik AC tinggi (${konsumsiListrik.AC}W)! Periksa efisiensi unit.`);
+    }
+
+    if (konsumsiListrik.Fridge > 500) {
+        addMessage('critical', `Konsumsi listrik kulkas berlebih (${konsumsiListrik.Fridge}W)! Periksa kompressor.`);
+    }
+
+    if (konsumsiListrik.RoomCensor > 50) {
+        addMessage('warning', `Konsumsi sensor ruangan tidak normal (${konsumsiListrik.RoomCensor}W). Periksa sambungan.`);
+    }
+
+    if (konsumsiListrik.TV > 300) {
+        addMessage('warning', `Konsumsi listrik TV tinggi (${konsumsiListrik.TV}W). Pertimbangkan mode hemat energi.`);
+    }
+
+    // Calculate total power consumption
+    const totalPower = Object.values(konsumsiListrik).reduce((sum, current) => sum + current, 0);
+    if (totalPower > 2000) {
+        addMessage('critical', `Total konsumsi listrik sangat tinggi (${totalPower}W)! Periksa penggunaan peralatan.`);
+    }
+
+    // Add normal status message if everything is within limits
     if (messages.length === 0) {
-        const allNormal = suhu >= 18 && suhu <= 30 && 
-                         kelembapan >= 30 && kelembapan <= 70 && 
-                         konsumsiListrik <= 240;
-                         
-        if (allNormal) {
-            addMessage('success', 'Semua sistem berjalan normal. Tidak ada masalah yang terdeteksi.');
-        }
+        addMessage('success', 'Semua perangkat berfungsi normal dan konsumsi listrik dalam batas aman.');
     }
 
     return messages;

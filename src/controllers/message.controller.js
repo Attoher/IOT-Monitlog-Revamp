@@ -36,18 +36,23 @@ const messageController = {
 
                 if (existingMessages.length === 0) {
                     // Get latest sensor data
-                    const suhuData = await client.db("suhu").collection("iotmonitlog")
-                        .findOne({}, { sort: { _time: -1 } });
-                    const kelembapanData = await client.db("kelembapan").collection("iotmonitlog")
-                        .findOne({}, { sort: { _time: -1 } });
-                    const listrikData = await client.db("listrik").collection("iotmonitlog")
-                        .findOne({}, { sort: { _time: -1 } });
-
-                    // Generate system messages
                     const sensorData = {
-                        suhu: suhuData?._value ?? 25,
-                        kelembapan: kelembapanData?._value ?? 50,
-                        konsumsiListrik: listrikData?._value ?? 220
+                        suhu: {
+                            Fridge: await getLatestValue(client, "suhu", "Fridge"),
+                            AC: await getLatestValue(client, "suhu", "AC"),
+                            RoomTemperature: await getLatestValue(client, "suhu", "RoomTemperature")
+                        },
+                        kelembapan: {
+                            Fridge: await getLatestValue(client, "kelembapan", "Fridge"),
+                            AC: await getLatestValue(client, "kelembapan", "AC"),
+                            RoomHumidity: await getLatestValue(client, "kelembapan", "RoomHumidity")
+                        },
+                        konsumsiListrik: {
+                            AC: await getLatestValue(client, "listrik", "AC"),
+                            Fridge: await getLatestValue(client, "listrik", "Fridge"),
+                            RoomCensor: await getLatestValue(client, "listrik", "RoomCensor"),
+                            TV: await getLatestValue(client, "listrik", "TV")
+                        }
                     };
 
                     const messages = generateSystemMessages(sensorData);
@@ -145,5 +150,12 @@ const messageController = {
         }
     }
 };
+
+// Add this helper function at the bottom of the file:
+async function getLatestValue(client, database, measurement) {
+    const data = await client.db(database).collection("iotmonitlog")
+        .findOne({ _measurement: measurement }, { sort: { _time: -1 } });
+    return data?._value ?? 0;
+}
 
 module.exports = messageController;
