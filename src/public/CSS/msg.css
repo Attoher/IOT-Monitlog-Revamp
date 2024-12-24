@@ -152,3 +152,214 @@
     color: var(--color-white);
     background: var(--color-primary);
 }
+
+/* Upload modal styles */
+.upload-modal {
+    padding: 1rem;
+    text-align: center;
+}
+
+.upload-modal h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-dark);
+}
+
+.upload-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.upload-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border: 2px solid var(--color-light);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: none;
+}
+
+.upload-option:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.upload-option span {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+}
+
+.upload-option span:last-child {
+    font-size: 1rem;
+    color: var(--color-dark);
+}
+
+/* Dark theme support */
+[data-theme="dark"] .upload-modal h2 {
+    color: var(--color-light);
+}
+
+[data-theme="dark"] .upload-option {
+    border-color: var(--color-gray-dark);
+}
+
+[data-theme="dark"] .upload-option span:last-child {
+    color: var(--color-light);
+}
+
+/* Updated upload modal styles */
+.tingle-modal {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.tingle-modal-box {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    width: 80%;
+    max-width: 600px;
+}
+
+.tingle-modal-box__content {
+    padding: 2rem;
+    background: var(--color-white);
+    color: var(--color-dark);
+}
+
+.tingle-modal-box__footer {
+    padding: 1.5rem 2rem;
+    background: var(--color-light);
+    color: var(--color-dark);
+    border-top: 1px solid var(--color-light);
+}
+
+[data-theme="dark"] .tingle-modal-box__content {
+    background: var(--color-gray-dark);
+    color: var(--color-light);
+}
+
+[data-theme="dark"] .tingle-modal-box__footer {
+    background: var(--color-dark);
+    color: var(--color-light);
+    border-top-color: var(--color-gray-dark);
+}
+
+.tingle-modal-box__content {
+    padding: 2rem;
+}
+
+.upload-modal {
+    text-align: center;
+    background: var(--color-white);
+}
+
+.upload-modal h2 {
+    color: var(--color-dark);
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+}
+
+.upload-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 0 auto;
+    max-width: 500px;
+}
+
+.upload-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border: 2px solid var(--color-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--color-white);
+}
+
+.upload-option:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.upload-option span.material-symbols-outlined {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+}
+
+.upload-option span:last-child {
+    font-size: 1rem;
+    color: var(--color-dark);
+    text-align: center;
+}
+
+.tingle-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tingle-btn--primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.tingle-btn--danger {
+    background: var(--color-error);
+    color: var(--color-white);
+}
+
+/* Dark theme support */
+[data-theme="dark"] .tingle-modal-box {
+    background: var(--color-dark);
+}
+
+[data-theme="dark"] .upload-modal h2 {
+    color: var(--color-light);
+}
+
+[data-theme="dark"] .upload-option {
+    background: var(--color-dark);
+    border-color: var(--color-gray-dark);
+}
+
+[data-theme="dark"] .upload-option span:last-child {
+    color: var(--color-light);
+}
+
+[data-theme="dark"] .upload-option:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: var(--color-dark);
+}
+
+[data-theme="dark"] .tingle-modal-box,
+[data-theme="dark"] .upload-modal {
+    background: var(--color-gray-dark);
+}
+
+[data-theme="dark"] .upload-option {
+    background: var(--color-dark);
+    border-color: var(--color-dark);
+}
+
+[data-theme="dark"] .upload-modal h2,
+[data-theme="dark"] .upload-option span:last-child {
+    color: var(--color-light);
+}
+
+[data-theme="dark"] .upload-option:hover {
+    border-color: var(--color-primary);
+    background: var(--color-dark);
+}

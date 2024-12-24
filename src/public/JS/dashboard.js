@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>${suhuValue} °C</h2>
                     <h2>${measurement}</h2>
                     <h3>Temperature</h3>
-                    <img src="images/Temp.png" alt="Temperature" class="icon">
+                    <span class="material-symbols-outlined">device_thermostat</span>
                 </div>
                 <p class="status" id="status-temp-${measurement.toLowerCase()}-${currentSensorId}"></p>
             </div>
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>${kelembapanValue} %</h2>
                     <h2>${measurement}</h2>
                     <h3>Humidity</h3>
-                    <img src="images/humidity.jpg" alt="Humidity" class="icon">
+                    <span class="material-symbols-outlined">humidity_percentage</span>
                 </div>
                 <p class="status" id="status-humidity-${measurement.toLowerCase()}-${currentSensorId}"></p>
             </div>
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>${konsumsiValue} V</h2>
                     <h2>${measurement}</h2>
                     <h3>Power</h3>
-                    <img src="images/power.jpg" alt="Power" class="icon">
+                    <span class="material-symbols-outlined">electric_bolt</span>
                 </div>
             </div>
         `;
