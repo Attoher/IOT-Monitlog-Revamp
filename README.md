@@ -65,7 +65,7 @@ Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisi
 
 ### Tampilan Aplikasi :
 
-#### Login And Register Page 
+# Login And Register Page 
 
 ![image](https://github.com/user-attachments/assets/d765ea45-52c1-4354-bed9-457bedb4e741)
 
@@ -75,19 +75,19 @@ Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisi
 
 ![image](https://github.com/user-attachments/assets/53884dbb-6e78-445f-a55e-cc8fe955bccb)
 
-### Landing Page 
+# Landing Page 
 
 ![image](https://github.com/user-attachments/assets/7c018a4b-019f-47a7-b5c8-aba46625a445)
 
 ![image](https://github.com/user-attachments/assets/7de3ba01-f7c4-4324-994c-197e0ab21380)
 
-### Tampilan Dashboard 
+# Tampilan Dashboard 
 
 ![image](https://github.com/user-attachments/assets/0133ae3e-026f-4a35-874c-512a2f52fc6f)
 
 ![image](https://github.com/user-attachments/assets/eaf93c90-8be6-410e-a424-142ba710d83f)
 
-### Tamplian Analytics 
+# Tamplian Analytics 
 
 ![image](https://github.com/user-attachments/assets/634b9e12-ea89-497b-bbff-2e77bc1ae767)
 
@@ -105,7 +105,7 @@ Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisi
 
 ![image](https://github.com/user-attachments/assets/5489f60e-b130-40e8-81f4-2057bb08666e)
 
-### Tamplian Messages 
+# Tamplian Messages 
 
 ![image](https://github.com/user-attachments/assets/dce0bcbe-cdce-43b7-b1b1-410692e8a14f)
 
@@ -116,7 +116,7 @@ Dengan sistem ini, pengguna dapat melakukan monitoring, pengelolaan, dan analisi
 ![image](https://github.com/user-attachments/assets/108de168-2223-4768-8a5f-8a8c60d48e60)
 
 
-### Tampilan Settings 
+# Tampilan Settings 
 
 ![image](https://github.com/user-attachments/assets/4baba3d3-2cc9-4ea1-92d8-d443b4a21b31)
 
